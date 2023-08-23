@@ -1,0 +1,149 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "./erd.png"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id  String  @id
+  email    String  @unique
+  password String?
+  name     String
+  type     Int // 1 = professor, 2 = aluno 
+
+  games             Games[]             @relation("teacher")
+  studentsPlayGames StudentsPlayGames[]
+  questions         Questions[]
+  groups            Groups[]            @relation("teacher_groups")
+
+  group_id String?
+  group    Groups? @relation("students_groups", fields: [group_id], references: [group_id], onDelete: Cascade)
+
+  @@map("users")
+}
+
+model StudentsPlayGames {
+  student_play_game_id String @id
+  game_position        Int // ordem do jogador no jogo
+  start_house          Int
+  finish_house         Int
+
+  player_user_id String
+  player         User   @relation(fields: [player_user_id], references: [user_id])
+
+  game_id String
+  game    Games  @relation("player", fields: [game_id], references: [game_id])
+
+  playing Games[] @relation("playing")
+
+  gamesWon         Games[]            @relation("winner")
+  pieces           Pieces[]
+  UserCheckOptions UserCheckOptions[]
+
+  @@map("students_play_games")
+}
+
+model Games {
+  game_id    String   @id
+  is_started Boolean?
+  created_at DateTime @default(now())
+  game_level Int
+
+  teacher_user_id String
+  teacher         User                @relation("teacher", fields: [teacher_user_id], references: [user_id])
+  players         StudentsPlayGames[] @relation("player")
+
+  winner_user_id String?
+  winner         StudentsPlayGames? @relation("winner", fields: [winner_user_id], references: [student_play_game_id])
+
+  current_player_id String?
+  current_player    StudentsPlayGames?  @relation("playing", fields: [current_player_id], references: [student_play_game_id])
+  gamesHasQuestions GamesHasQuestions[]
+
+  @@map("games")
+}
+
+model Pieces {
+  piece_id             String  @id
+  house_position       Int
+  is_started           Boolean @default(false)
+  is_finish_line       Boolean @default(false)
+  finish_line_position Int     @default(0)
+
+  student_play_game_id String
+  player_owner         StudentsPlayGames @relation(fields: [student_play_game_id], references: [student_play_game_id])
+
+  @@map("pieces")
+}
+
+model GamesHasQuestions {
+  game_has_question_id String @id
+
+  question_id String
+  question    Questions @relation(fields: [question_id], references: [question_id])
+
+  game_id String
+  game    Games  @relation(fields: [game_id], references: [game_id])
+
+  @@map("games_has_questions")
+}
+
+model Questions {
+  question_id String @id
+  content     String
+  level       Int
+
+  user_id String
+  teacher User   @relation(fields: [user_id], references: [user_id])
+
+  gamesHasQuestions GamesHasQuestions[]
+  questionOptions   QuestionOptions[]
+
+  @@map("questions")
+}
+
+model QuestionOptions {
+  question_option_id String @id
+  points             Int
+  content            String
+
+  question_id      String
+  question         Questions          @relation(fields: [question_id], references: [question_id])
+  UserCheckOptions UserCheckOptions[]
+
+  @@map("question_options")
+}
+
+model UserCheckOptions {
+  user_check_options_id String @id
+
+  student_user_id String
+  player          StudentsPlayGames @relation(fields: [student_user_id], references: [student_play_game_id])
+
+  question_option_id String
+  question_option    QuestionOptions @relation(fields: [question_option_id], references: [question_option_id])
+
+  @@map("user_check_options")
+}
+
+model Groups {
+  group_id    String @id
+  name        String
+  description String
+
+  teacher_owner_user_id String
+  teacher_owner         User   @relation("teacher_groups", fields: [teacher_owner_user_id], references: [user_id])
+  students              User[] @relation("students_groups")
+}
