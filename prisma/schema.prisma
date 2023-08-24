@@ -50,7 +50,7 @@ model StudentsPlayGames {
 
   gamesWon         Games[]            @relation("winner")
   pieces           Pieces[]
-  UserCheckOptions UserCheckOptions[]
+  userCheckOptions UserCheckOptions[]
 
   @@map("students_play_games")
 }
@@ -121,7 +121,7 @@ model QuestionOptions {
 
   question_id      String
   question         Questions          @relation(fields: [question_id], references: [question_id])
-  UserCheckOptions UserCheckOptions[]
+  userCheckOptions UserCheckOptions[]
 
   @@map("question_options")
 }
@@ -146,4 +146,6 @@ model Groups {
   teacher_owner_user_id String
   teacher_owner         User   @relation("teacher_groups", fields: [teacher_owner_user_id], references: [user_id])
   students              User[] @relation("students_groups")
+
+  @@map("groups")
 }
