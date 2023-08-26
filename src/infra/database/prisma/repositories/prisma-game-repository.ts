@@ -42,7 +42,15 @@ export class PrismaGameRepository implements GameRepository {
       include: {
         players: true,
         current_player: true,
-        gamesHasQuestions: true,
+        gamesHasQuestions: {
+          include: {
+            question: {
+              include: {
+                questionOptions: true,
+              },
+            },
+          },
+        },
         group: true,
         teacher: true,
         winner: true,
@@ -61,7 +69,15 @@ export class PrismaGameRepository implements GameRepository {
       include: {
         players: true,
         current_player: true,
-        gamesHasQuestions: true,
+        gamesHasQuestions: {
+          include: {
+            question: {
+              include: {
+                questionOptions: true,
+              },
+            },
+          },
+        },
         group: true,
         teacher: true,
         winner: true,
@@ -78,7 +94,15 @@ export class PrismaGameRepository implements GameRepository {
       include: {
         players: true,
         current_player: true,
-        gamesHasQuestions: true,
+        gamesHasQuestions: {
+          include: {
+            question: {
+              include: {
+                questionOptions: true,
+              },
+            },
+          },
+        },
         group: true,
         teacher: true,
         winner: true,
