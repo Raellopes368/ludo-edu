@@ -18,6 +18,8 @@ import { CreateQuestion } from '@app/use-cases/teacher/create-questions';
 import { CheckUserCanCreateQuestionOptions } from '@app/use-cases/teacher/check-user-can-create-question-options';
 import { CreateQuestionOptions } from '@app/use-cases/teacher/create-question-options';
 import { QuestionOptionController } from './controllers/question-option.controller';
+import { CreateGames } from '@app/use-cases/teacher/create-games';
+import { GameController } from './controllers/game.controller';
 
 @Module({
   imports: [DatabaseModule],
@@ -27,6 +29,7 @@ import { QuestionOptionController } from './controllers/question-option.controll
     GroupController,
     QuestionController,
     QuestionOptionController,
+    GameController,
   ],
   providers: [
     CreateUser,
@@ -37,6 +40,7 @@ import { QuestionOptionController } from './controllers/question-option.controll
     CreateQuestion,
     CheckUserCanCreateQuestionOptions,
     CreateQuestionOptions,
+    CreateGames,
   ],
 })
 export class HttpModule {}
