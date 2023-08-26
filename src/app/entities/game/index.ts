@@ -1,6 +1,7 @@
 import { Replace } from '@helpers/Replace';
 import { User } from '../user';
 import { randomUUID } from 'crypto';
+import { Groups } from '../groups';
 
 interface GameProps {
   is_started?: boolean;
@@ -9,12 +10,14 @@ interface GameProps {
   teacher_user_id: string;
   winner_user_id?: string;
   current_player_id?: string;
+  group_id: string;
 }
 
 export class Game {
   private props: GameProps;
   private _id: string;
   private _teacher: User;
+  private _group: Groups;
 
   constructor(props: Replace<GameProps, { created_at?: Date }>, id?: string) {
     this.props = { ...props, created_at: props.created_at ?? new Date() };
@@ -71,5 +74,13 @@ export class Game {
 
   set teacher(teacher: User) {
     this._teacher = teacher;
+  }
+
+  get group(): Groups {
+    return this._group;
+  }
+
+  set group(group: Groups) {
+    this._group = group;
   }
 }

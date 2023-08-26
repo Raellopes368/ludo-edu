@@ -67,6 +67,8 @@ model Games {
   current_player_id String?
   current_player    StudentsPlayGames?  @relation("playing", fields: [current_player_id], references: [student_play_game_id])
   gamesHasQuestions GamesHasQuestions[]
+  group_id          String
+  group             Groups              @relation(fields: [group_id], references: [group_id])
 
   @@map("games")
 }
@@ -146,6 +148,7 @@ model Groups {
   teacher_owner         User        @relation("teacher_groups", fields: [teacher_owner_user_id], references: [user_id])
   students              User[]      @relation("students_groups")
   questions             Questions[]
+  games                 Games[]
 
   @@map("groups")
 }
