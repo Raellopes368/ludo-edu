@@ -135,7 +135,7 @@ model UserCheckOptions {
 
 model Groups {
   group_id    String @id
-  name        String
+  name        String @unique
   description String
 
   teacher_owner_user_id String
