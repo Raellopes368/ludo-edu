@@ -1,4 +1,4 @@
-import { CreateGroups } from '@app/use-cases/user/create-groups';
+import { CreateGroups } from '@app/use-cases/teacher/create-groups';
 import {
   Body,
   Controller,
