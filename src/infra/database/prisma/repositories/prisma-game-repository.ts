@@ -3,6 +3,7 @@ import { GameRepository } from '@app/repositories/GameRepository';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { PrismaGameMapper } from '../mappers/prisma-game-mapper';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class PrismaGameRepository implements GameRepository {
@@ -19,6 +20,18 @@ export class PrismaGameRepository implements GameRepository {
     const gamesRaw = games.map((game) => PrismaGameMapper.toPrisma(game));
     await this.prisma.games.createMany({
       data: gamesRaw,
+    });
+  }
+
+  async addQuestionsToGame(
+    game_id: string,
+    questions_id: string[],
+  ): Promise<void> {
+    await this.prisma.gamesHasQuestions.createMany({
+      data: questions_id.map((item) => ({
+        game_id,
+        question_id: item,
+      })),
     });
   }
   async findById(game_id: string): Promise<Game> {
