@@ -33,7 +33,8 @@ export class AddQuestionsToGame {
     );
 
     const questionsCanAdd = questions.filter(
-      (question) => question.level === game.game_level,
+      (question) =>
+        question.level === game.game_level && question.questionOptions?.length,
     );
 
     if (!questionsCanAdd.length)
