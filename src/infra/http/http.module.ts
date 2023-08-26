@@ -8,19 +8,29 @@ import { AuthController } from './controllers/auth.controller';
 
 import { CreateUser } from '@app/use-cases/user/create-user';
 import { UserController } from './controllers/user.controller';
-import { CreateGroups } from '@app/use-cases/user/create-groups';
-import { CheckUserCanCreateAGroup } from '@app/use-cases/user/check-user-can-create-a-group';
+
+import { CreateGroups } from '@app/use-cases/teacher/create-groups';
+import { CheckUserCanCreateAGroup } from '@app/use-cases/teacher/check-user-can-create-a-group';
 import { GroupController } from './controllers/group.controller';
+
+import { QuestionController } from './controllers/question.controller';
+import { CreateQuestion } from '@app/use-cases/teacher/create-questions';
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [UserController, AuthController, GroupController],
+  controllers: [
+    UserController,
+    AuthController,
+    GroupController,
+    QuestionController,
+  ],
   providers: [
     CreateUser,
     CreateAuth,
     JwtService,
     CreateGroups,
     CheckUserCanCreateAGroup,
+    CreateQuestion,
   ],
 })
 export class HttpModule {}

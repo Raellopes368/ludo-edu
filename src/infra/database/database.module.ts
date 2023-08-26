@@ -6,6 +6,8 @@ import { PrismaUserRepository } from './prisma/repositories/prisma-user-reposito
 
 import { GroupsRepository } from '@app/repositories/GroupsRepository';
 import { PrismaGroupRepository } from './prisma/repositories/prisma-group-repository';
+import { QuestionsRepository } from '@app/repositories/QuestionsRepository';
+import { PrismaQuestionRepository } from './prisma/repositories/prisma-question-repository';
 
 @Module({
   providers: [
@@ -18,7 +20,11 @@ import { PrismaGroupRepository } from './prisma/repositories/prisma-group-reposi
       provide: GroupsRepository,
       useClass: PrismaGroupRepository,
     },
+    {
+      provide: QuestionsRepository,
+      useClass: PrismaQuestionRepository,
+    },
   ],
-  exports: [UserRepository, GroupsRepository],
+  exports: [UserRepository, GroupsRepository, QuestionsRepository],
 })
 export class DatabaseModule {}
