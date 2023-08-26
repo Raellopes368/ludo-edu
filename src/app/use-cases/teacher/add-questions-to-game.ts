@@ -32,9 +32,12 @@ export class AddQuestionsToGame {
       ),
     );
 
+    const gameQuestionsIds = game.questions?.map((item) => item.id);
     const questionsCanAdd = questions.filter(
       (question) =>
-        question.level === game.game_level && question.questionOptions?.length,
+        question.level === game.game_level &&
+        question.questionOptions?.length &&
+        !gameQuestionsIds?.includes(question.id),
     );
 
     if (!questionsCanAdd.length)
