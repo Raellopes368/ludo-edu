@@ -15,6 +15,9 @@ import { GroupController } from './controllers/group.controller';
 
 import { QuestionController } from './controllers/question.controller';
 import { CreateQuestion } from '@app/use-cases/teacher/create-questions';
+import { CheckUserCanCreateQuestionOptions } from '@app/use-cases/teacher/check-user-can-create-question-options';
+import { CreateQuestionOptions } from '@app/use-cases/teacher/create-question-options';
+import { QuestionOptionController } from './controllers/question-option.controller';
 
 @Module({
   imports: [DatabaseModule],
@@ -23,6 +26,7 @@ import { CreateQuestion } from '@app/use-cases/teacher/create-questions';
     AuthController,
     GroupController,
     QuestionController,
+    QuestionOptionController,
   ],
   providers: [
     CreateUser,
@@ -31,6 +35,8 @@ import { CreateQuestion } from '@app/use-cases/teacher/create-questions';
     CreateGroups,
     CheckUserCanCreateAGroup,
     CreateQuestion,
+    CheckUserCanCreateQuestionOptions,
+    CreateQuestionOptions,
   ],
 })
 export class HttpModule {}
