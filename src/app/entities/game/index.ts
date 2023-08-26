@@ -53,7 +53,7 @@ export class Game {
   }
 
   get winner_user_id(): string {
-    return this.props.winner_user_id;
+    return this.props.winner_user_id || null;
   }
 
   set winner_user_id(winner_user_id: string) {
@@ -69,7 +69,7 @@ export class Game {
   }
 
   get current_player_id(): string {
-    return this.props.current_player_id;
+    return this.props.current_player_id || null;
   }
 
   set current_player_id(current_player_id: string) {
