@@ -1,9 +1,15 @@
 import { Question } from '@app/entities/question';
-import { Groups, Questions as QuestionsRaw } from '@prisma/client';
+import {
+  Groups,
+  QuestionOptions,
+  Questions as QuestionsRaw,
+} from '@prisma/client';
 import { PrismaGroupMapper } from './prisma-group-mapper';
+import { PrismaQuestionOptionsMapper } from './prisma-question-option-mapper';
 
 interface QuestionData extends QuestionsRaw {
   group?: Groups;
+  questionOptions?: QuestionOptions[];
 }
 
 export class PrismaQuestionMapper {
@@ -30,6 +36,10 @@ export class PrismaQuestionMapper {
 
     if (question.group)
       questionDomain.group = PrismaGroupMapper.toDomain(question.group);
+    if (question.questionOptions)
+      questionDomain.questionOptions = question.questionOptions.map((option) =>
+        PrismaQuestionOptionsMapper.toDomain(option),
+      );
 
     return questionDomain;
   }

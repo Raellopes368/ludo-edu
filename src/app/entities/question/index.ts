@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { Groups } from '../groups';
+import { QuestionOptions } from './QuestionOption';
 
 interface QuestionProps {
   content: string;
@@ -12,6 +13,7 @@ export class Question {
   private props: QuestionProps;
   private _id: string;
   private _group: Groups;
+  private _questionOptions: QuestionOptions[];
 
   constructor(props: QuestionProps, id?: string) {
     this._id = id ?? randomUUID();
@@ -60,5 +62,13 @@ export class Question {
 
   set group(group: Groups) {
     this._group = group;
+  }
+
+  get questionOptions() {
+    return this._questionOptions;
+  }
+
+  set questionOptions(questionOptions: QuestionOptions[]) {
+    this._questionOptions = questionOptions;
   }
 }

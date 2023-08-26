@@ -18,6 +18,11 @@ export class PrismaQuestionRepository implements QuestionsRepository {
       where: {
         question_id,
       },
+      include: {
+        questionOptions: true,
+        group: true,
+        teacher: true,
+      },
     });
 
     if (!question) return null;
@@ -29,6 +34,11 @@ export class PrismaQuestionRepository implements QuestionsRepository {
       where: {
         group_id,
       },
+      include: {
+        questionOptions: true,
+        group: true,
+        teacher: true,
+      },
     });
 
     return questions.map((question) => PrismaQuestionMapper.toDomain(question));
@@ -38,6 +48,11 @@ export class PrismaQuestionRepository implements QuestionsRepository {
       where: {
         user_id: teacher_id,
       },
+      include: {
+        questionOptions: true,
+        group: true,
+        teacher: true,
+      },
     });
 
     return questions.map((question) => PrismaQuestionMapper.toDomain(question));
@@ -46,6 +61,11 @@ export class PrismaQuestionRepository implements QuestionsRepository {
     const questions = await this.prisma.questions.findMany({
       where: {
         group_id,
+      },
+      include: {
+        questionOptions: true,
+        group: true,
+        teacher: true,
       },
     });
 
