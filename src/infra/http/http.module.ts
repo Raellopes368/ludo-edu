@@ -21,6 +21,9 @@ import { QuestionOptionController } from './controllers/question-option.controll
 import { CreateGames } from '@app/use-cases/teacher/create-games';
 import { GameController } from './controllers/game.controller';
 
+import { CheckUserCanAddQuestionToGame } from '@app/use-cases/teacher/check-user-can-add-question-to-game';
+import { AddQuestionsToGame } from '@app/use-cases/teacher/add-questions-to-game';
+
 @Module({
   imports: [DatabaseModule],
   controllers: [
@@ -41,6 +44,8 @@ import { GameController } from './controllers/game.controller';
     CheckUserCanCreateQuestionOptions,
     CreateQuestionOptions,
     CreateGames,
+    CheckUserCanAddQuestionToGame,
+    AddQuestionsToGame,
   ],
 })
 export class HttpModule {}
