@@ -18,14 +18,15 @@ export class CreateGames {
     teacher_user_id,
     amount_games,
   }: CreateGamesRequest) {
-    const games = Array.from({ length: amount_games }).fill(
+    const games = Array.from({ length: amount_games }).map(
       () =>
         new Game({
           game_level,
           group_id,
           teacher_user_id,
         }),
-    ) as Game[];
+    );
+
     await this.gameRepository.createMany(games);
 
     return {
