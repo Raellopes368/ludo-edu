@@ -3,7 +3,7 @@ import { Groups, Questions as QuestionsRaw } from '@prisma/client';
 import { PrismaGroupMapper } from './prisma-group-mapper';
 
 interface QuestionData extends QuestionsRaw {
-  group: Groups;
+  group?: Groups;
 }
 
 export class PrismaQuestionMapper {
