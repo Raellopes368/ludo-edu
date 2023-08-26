@@ -1,28 +1,41 @@
-import { User } from '@app/entities/user';
-import { User as UserRaw } from '@prisma/client';
+import { Groups } from '@app/entities/groups';
+import { Groups as GroupsRaw, User } from '@prisma/client';
+import { PrismaUserMapper } from './prisma-user-mapper';
+
+interface GroupData extends GroupsRaw {
+  teacher_owner?: User;
+  students?: User[];
+}
 
 export class PrismaGroupMapper {
-  static toPrisma(user: User): UserRaw {
+  static toPrisma(group: Groups): GroupsRaw {
     return {
-      email: user.email,
-      group_id: user.group_id,
-      name: user.name,
-      password: user.password,
-      type: user.type,
-      user_id: user.id,
+      description: group.description,
+      group_id: group.group_id,
+      name: group.name,
+      teacher_owner_user_id: group.teacher_owner_user_id,
     };
   }
 
-  static toDomain(user: UserRaw): User {
-    return new User(
+  static toDomain(group: GroupData): Groups {
+    const groupDomain = new Groups(
       {
-        email: user.email,
-        name: user.name,
-        password: user.password,
-        type: user.type,
-        group_id: user.group_id,
+        description: group.description,
+        name: group.name,
+        teacher_owner_user_id: group.teacher_owner_user_id,
       },
-      user.user_id,
+      group.group_id,
     );
+
+    if (group.teacher_owner)
+      groupDomain.teacher_owner = PrismaUserMapper.toDomain(
+        group.teacher_owner,
+      );
+
+    if (group.students)
+      groupDomain.students = group.students.map((student) =>
+        PrismaUserMapper.toDomain(student),
+      );
+    return groupDomain;
   }
 }
