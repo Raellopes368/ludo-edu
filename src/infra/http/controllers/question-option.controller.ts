@@ -36,7 +36,7 @@ export class QuestionOptionController {
 
       return {
         questionOptions: questionOptions.map((option) =>
-          QuestionOptionViewModel.toHTTP(option),
+          QuestionOptionViewModel.toHTTP(option, true),
         ),
       };
     } catch (error: any) {
