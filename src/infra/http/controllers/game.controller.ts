@@ -12,10 +12,15 @@ import { CreateGamesBody } from '../dtos/create-games-body';
 import { GameViewModel } from '../view-models/game-view-model';
 import { JwtAuthGuard } from '@infra/auth/jwt-auth.guard';
 import { JWTReqPayload } from 'src/interfaces';
+import { AddQuestionsToGameBody } from '../dtos/add-questions-to-game-body';
+import { AddQuestionsToGame } from '@app/use-cases/teacher/add-questions-to-game';
 
 @Controller('games')
 export class GameController {
-  constructor(private readonly createGame: CreateGames) {}
+  constructor(
+    private readonly createGame: CreateGames,
+    private addQuestionsToGame: AddQuestionsToGame,
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -37,6 +42,32 @@ export class GameController {
       throw new HttpException(
         'Não foi possível criar os jogos',
         HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Post('/questions')
+  @UseGuards(JwtAuthGuard)
+  async addQuestions(
+    @Body() body: AddQuestionsToGameBody,
+    @Req() req: JWTReqPayload,
+  ) {
+    const { game_id, questions_id } = body;
+    const { userId: user_id } = req.user;
+    try {
+      const { game } = await this.addQuestionsToGame.execute({
+        game_id,
+        questions_id,
+        user_id,
+      });
+
+      return {
+        game: GameViewModel.toHTTP(game),
+      };
+    } catch (error: any) {
+      throw new HttpException(
+        error.response || 'Não foi possível adicionar essas questões',
+        error.status || HttpStatus.BAD_REQUEST,
       );
     }
   }
