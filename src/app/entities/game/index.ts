@@ -60,6 +60,14 @@ export class Game {
     this.props.winner_user_id = winner_user_id;
   }
 
+  get group_id(): string {
+    return this.props.group_id;
+  }
+
+  set group_id(group_id: string) {
+    this.props.group_id = group_id;
+  }
+
   get current_player_id(): string {
     return this.props.current_player_id;
   }
