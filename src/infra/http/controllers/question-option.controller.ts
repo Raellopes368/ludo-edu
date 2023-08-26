@@ -41,8 +41,8 @@ export class QuestionOptionController {
       };
     } catch (error: any) {
       throw new HttpException(
-        'Não foi possível criar as opções',
-        HttpStatus.BAD_REQUEST,
+        error.response || 'Não foi possível criar as opções',
+        error.status || HttpStatus.BAD_REQUEST,
       );
     }
   }
