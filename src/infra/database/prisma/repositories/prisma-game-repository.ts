@@ -14,6 +14,13 @@ export class PrismaGameRepository implements GameRepository {
       data: gameRaw,
     });
   }
+
+  async createMany(games: Game[]): Promise<void> {
+    const gamesRaw = games.map((game) => PrismaGameMapper.toPrisma(game));
+    await this.prisma.games.createMany({
+      data: gamesRaw,
+    });
+  }
   async findById(game_id: string): Promise<Game> {
     const game = await this.prisma.games.findUnique({
       where: {
