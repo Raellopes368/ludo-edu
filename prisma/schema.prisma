@@ -87,7 +87,7 @@ model Pieces {
 }
 
 model GamesHasQuestions {
-  game_has_question_id String @id
+  game_has_question_id String @id @default(uuid())
 
   question_id String
   question    Questions @relation(fields: [question_id], references: [question_id])
