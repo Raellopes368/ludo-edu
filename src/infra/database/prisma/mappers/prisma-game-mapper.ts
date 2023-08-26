@@ -1,5 +1,12 @@
 import { Game } from '@app/entities/game';
-import { Games } from '@prisma/client';
+import { Games, GamesHasQuestions, Questions } from '@prisma/client';
+import { PrismaQuestionMapper } from './prisma-question-mapper';
+
+interface GamesDomainData extends Games {
+  gamesHasQuestions: (GamesHasQuestions & {
+    question: Questions;
+  })[];
+}
 
 export class PrismaGameMapper {
   static toPrisma(game: Game): Games {
@@ -14,8 +21,8 @@ export class PrismaGameMapper {
       winner_user_id: game.winner_user_id,
     };
   }
-  static toDomain(game: Games) {
-    return new Game({
+  static toDomain(game: GamesDomainData) {
+    const gameDomain = new Game({
       game_level: game.game_level,
       group_id: game.group_id,
       teacher_user_id: game.teacher_user_id,
@@ -24,5 +31,11 @@ export class PrismaGameMapper {
       is_started: game.is_started,
       winner_user_id: game.winner_user_id,
     });
+
+    if (game.gamesHasQuestions)
+      gameDomain.questions = game.gamesHasQuestions.map((item) =>
+        PrismaQuestionMapper.toDomain(item.question),
+      );
+    return gameDomain;
   }
 }
