@@ -23,6 +23,9 @@ export class CheckUserCanCreateQuestionOptions {
     const question = await this.questionRepository.findById(question_id);
     if (!question || question.user_id !== user_id)
       result.error = 'Usuário não pode criar essas opções';
+
+    if (question.questionOptions?.length)
+      result.error = 'As opções já foram criadas';
     if (!options.filter((option) => option.points === 0))
       result.error = 'Você precisa informar pelo menos uma questão com valor 0';
     if (!options.filter((option) => option.points > 0))
