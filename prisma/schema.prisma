@@ -103,6 +103,9 @@ model Questions {
   user_id String
   teacher User   @relation(fields: [user_id], references: [user_id])
 
+  group_id String
+  group    Groups @relation(fields: [group_id], references: [group_id])
+
   gamesHasQuestions GamesHasQuestions[]
   questionOptions   QuestionOptions[]
 
@@ -139,8 +142,9 @@ model Groups {
   description String
 
   teacher_owner_user_id String
-  teacher_owner         User   @relation("teacher_groups", fields: [teacher_owner_user_id], references: [user_id])
-  students              User[] @relation("students_groups")
+  teacher_owner         User        @relation("teacher_groups", fields: [teacher_owner_user_id], references: [user_id])
+  students              User[]      @relation("students_groups")
+  questions             Questions[]
 
   @@map("groups")
 }
