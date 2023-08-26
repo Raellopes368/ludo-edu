@@ -5,8 +5,6 @@ interface GroupsProps {
   name: string;
   description: string;
   teacher_owner_user_id: string;
-  // teacher_owner         User   @relation("teacher_groups", fields: [teacher_owner_user_id], references: [user_id])
-  // students
 }
 
 export class Groups {
