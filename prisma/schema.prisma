@@ -47,7 +47,7 @@ model StudentsPlayGames {
   pieces           Pieces[]
   userCheckOptions UserCheckOptions[]
 
-  @@unique([student_play_game_id, game_id])
+  @@unique([player_user_id, game_id])
   @@map("students_play_games")
 }
 
