@@ -1,11 +1,18 @@
 import { Game } from '@app/entities/game';
-import { Games, GamesHasQuestions, Questions } from '@prisma/client';
+import {
+  Games,
+  GamesHasQuestions,
+  Questions,
+  StudentsPlayGames,
+} from '@prisma/client';
 import { PrismaQuestionMapper } from './prisma-question-mapper';
+import { PrismaStudentPlayGameMapper } from './prisma-student-play-game-mapper';
 
 interface GamesDomainData extends Games {
   gamesHasQuestions: (GamesHasQuestions & {
-    question: Questions;
+    question?: Questions;
   })[];
+  players?: StudentsPlayGames[];
 }
 
 export class PrismaGameMapper {
@@ -35,6 +42,11 @@ export class PrismaGameMapper {
     if (game.gamesHasQuestions)
       gameDomain.questions = game.gamesHasQuestions.map((item) =>
         PrismaQuestionMapper.toDomain(item.question),
+      );
+
+    if (game.players)
+      gameDomain.players = game.players.map((player) =>
+        PrismaStudentPlayGameMapper.toDomain(player),
       );
     return gameDomain;
   }
