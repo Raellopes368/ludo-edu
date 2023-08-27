@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { Game } from '../game';
+import { User } from '../user';
 
 interface StudentsPlayGamesProps {
   game_position: number;
@@ -12,7 +13,7 @@ interface StudentsPlayGamesProps {
 export class StudentsPlayGames {
   private props: StudentsPlayGamesProps;
   private _id: string;
-  private _student: string;
+  private _student: User;
   private _game: Game;
 
   constructor(props: StudentsPlayGamesProps, id?: string) {
@@ -60,11 +61,11 @@ export class StudentsPlayGames {
     return this.props.game_id;
   }
 
-  get student(): string {
+  get student(): User {
     return this._student;
   }
 
-  set student(student: string) {
+  set student(student: User) {
     this._student = student;
   }
 
