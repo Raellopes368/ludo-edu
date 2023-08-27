@@ -24,16 +24,16 @@ export class GetPlayerPositions {
         end: 20,
       },
       2: {
-        start: 1,
-        end: 20,
+        start: 6,
+        end: 5,
       },
       3: {
-        start: 1,
-        end: 20,
+        start: 11,
+        end: 10,
       },
       4: {
-        start: 1,
-        end: 20,
+        start: 16,
+        end: 15,
       },
     };
 
