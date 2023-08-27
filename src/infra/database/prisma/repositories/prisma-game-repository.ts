@@ -3,7 +3,6 @@ import { GameRepository } from '@app/repositories/GameRepository';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { PrismaGameMapper } from '../mappers/prisma-game-mapper';
-import { randomUUID } from 'crypto';
 
 @Injectable()
 export class PrismaGameRepository implements GameRepository {
