@@ -3,6 +3,7 @@ import { User } from '../user';
 import { randomUUID } from 'crypto';
 import { Groups } from '../groups';
 import { Question } from '../question';
+import { StudentsPlayGames } from '../studentsPlayGames';
 
 interface GameProps {
   is_started?: boolean;
@@ -20,6 +21,7 @@ export class Game {
   private _teacher: User;
   private _group: Groups;
   private _questions: Question[];
+  private _players: StudentsPlayGames[];
 
   constructor(props: Replace<GameProps, { created_at?: Date }>, id?: string) {
     this.props = { ...props, created_at: props.created_at ?? new Date() };
@@ -100,5 +102,13 @@ export class Game {
 
   set questions(questions: Question[]) {
     this._questions = questions;
+  }
+
+  get players(): StudentsPlayGames[] {
+    return this._players;
+  }
+
+  set players(players: StudentsPlayGames[]) {
+    this._players = players;
   }
 }
