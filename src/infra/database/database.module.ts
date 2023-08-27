@@ -16,6 +16,9 @@ import { PrismaQuestionOptionRepository } from './prisma/repositories/prisma-que
 import { GameRepository } from '@app/repositories/GameRepository';
 import { PrismaGameRepository } from './prisma/repositories/prisma-game-repository';
 
+import { StudentPlayGameRepository } from '@app/repositories/StudentPlayGameRepository';
+import { PrismaStudentPlayGameRepository } from './prisma/repositories/prisma-student-play-game-repository';
+
 @Module({
   providers: [
     PrismaService,
@@ -39,6 +42,10 @@ import { PrismaGameRepository } from './prisma/repositories/prisma-game-reposito
       provide: GameRepository,
       useClass: PrismaGameRepository,
     },
+    {
+      provide: StudentPlayGameRepository,
+      useClass: PrismaStudentPlayGameRepository,
+    },
   ],
   exports: [
     UserRepository,
@@ -46,6 +53,7 @@ import { PrismaGameRepository } from './prisma/repositories/prisma-game-reposito
     QuestionsRepository,
     QuestionOptionRepository,
     GameRepository,
+    StudentPlayGameRepository,
   ],
 })
 export class DatabaseModule {}
