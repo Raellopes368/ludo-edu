@@ -50,6 +50,12 @@ export class CheckUserCanJoinTheGame {
       };
     }
 
+    if (game.players?.find((player) => player.player_user_id === user_id))
+      return {
+        ...result,
+        error: 'Você já está nesse jogo',
+      };
+
     const user = await this.userRepository.findByUserId(user_id);
 
     if (user.type !== UserType.STUDENT) {
