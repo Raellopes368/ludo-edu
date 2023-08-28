@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsUUID } from 'class-validator';
 
-export class JoinAGroupParams {
+export class JoinAGroupBody {
   @IsUUID()
   @IsNotEmpty()
   group_id: string;
