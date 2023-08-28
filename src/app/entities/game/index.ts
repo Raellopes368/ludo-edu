@@ -111,4 +111,12 @@ export class Game {
   set players(players: StudentsPlayGames[]) {
     this._players = players;
   }
+
+  start() {
+    this.props.is_started = true;
+  }
+
+  endGame(winner_user_id: string) {
+    this.props.winner_user_id = winner_user_id;
+  }
 }
