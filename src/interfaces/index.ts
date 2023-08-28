@@ -15,3 +15,8 @@ export interface GameResponse {
   games: Game[];
   total_results: number;
 }
+
+export enum MinimumGameLimit {
+  QUESTIONS = 25,
+  PLAYERS = 2,
+}
