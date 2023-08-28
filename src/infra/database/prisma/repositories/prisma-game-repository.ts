@@ -65,22 +65,6 @@ export class PrismaGameRepository implements GameRepository {
       where: {
         teacher_user_id: teacher_id,
       },
-      include: {
-        players: true,
-        current_player: true,
-        gamesHasQuestions: {
-          include: {
-            question: {
-              include: {
-                questionOptions: true,
-              },
-            },
-          },
-        },
-        group: true,
-        teacher: true,
-        winner: true,
-      },
     });
 
     return games.map((game) => PrismaGameMapper.toDomain(game));
@@ -89,22 +73,6 @@ export class PrismaGameRepository implements GameRepository {
     const games = await this.prisma.games.findMany({
       where: {
         group_id,
-      },
-      include: {
-        players: true,
-        current_player: true,
-        gamesHasQuestions: {
-          include: {
-            question: {
-              include: {
-                questionOptions: true,
-              },
-            },
-          },
-        },
-        group: true,
-        teacher: true,
-        winner: true,
       },
     });
 
