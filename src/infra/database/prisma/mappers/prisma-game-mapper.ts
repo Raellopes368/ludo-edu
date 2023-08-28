@@ -29,15 +29,18 @@ export class PrismaGameMapper {
     };
   }
   static toDomain(game: GamesDomainData) {
-    const gameDomain = new Game({
-      game_level: game.game_level,
-      group_id: game.group_id,
-      teacher_user_id: game.teacher_user_id,
-      created_at: game.created_at,
-      current_player_id: game.current_player_id,
-      is_started: game.is_started,
-      winner_user_id: game.winner_user_id,
-    });
+    const gameDomain = new Game(
+      {
+        game_level: game.game_level,
+        group_id: game.group_id,
+        teacher_user_id: game.teacher_user_id,
+        created_at: game.created_at,
+        current_player_id: game.current_player_id,
+        is_started: game.is_started,
+        winner_user_id: game.winner_user_id,
+      },
+      game.game_id,
+    );
 
     if (game.gamesHasQuestions)
       gameDomain.questions = game.gamesHasQuestions.map((item) =>
