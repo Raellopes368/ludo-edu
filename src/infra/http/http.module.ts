@@ -31,6 +31,8 @@ import { GetPlayerPositions } from '@app/use-cases/students/get-player-positions
 import { PlayerController } from './controllers/player.controller';
 import { StudentJoinsAGroup } from '@app/use-cases/students/student-joins-a-group';
 import { ListGroups } from '@app/use-cases/teacher/list-groups';
+import { ListGamesByTeacher } from '@app/use-cases/user/list-games-by-teacher';
+import { ListGamesByGroup } from '@app/use-cases/user/list-games-by-group';
 
 @Module({
   imports: [DatabaseModule],
@@ -60,6 +62,8 @@ import { ListGroups } from '@app/use-cases/teacher/list-groups';
     GetPlayerPositions,
     StudentJoinsAGroup,
     ListGroups,
+    ListGamesByTeacher,
+    ListGamesByGroup,
   ],
 })
 export class HttpModule {}
