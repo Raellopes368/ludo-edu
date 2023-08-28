@@ -3,6 +3,7 @@ import { GameResponse } from 'src/interfaces';
 
 export abstract class GameRepository {
   abstract create(game: Game): Promise<void>;
+  abstract update(game: Game): Promise<void>;
   abstract addQuestionsToGame(
     game_id: string,
     questions_id: string[],

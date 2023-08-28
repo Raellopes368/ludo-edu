@@ -16,6 +16,16 @@ export class PrismaGameRepository implements GameRepository {
     });
   }
 
+  async update(game: Game): Promise<void> {
+    const gameRaw = PrismaGameMapper.toPrisma(game);
+    await this.prisma.games.update({
+      data: gameRaw,
+      where: {
+        game_id: game.id,
+      },
+    });
+  }
+
   async createMany(games: Game[]): Promise<void> {
     const gamesRaw = games.map((game) => PrismaGameMapper.toPrisma(game));
     await this.prisma.games.createMany({
