@@ -9,7 +9,7 @@ import { PrismaQuestionMapper } from './prisma-question-mapper';
 import { PrismaStudentPlayGameMapper } from './prisma-student-play-game-mapper';
 
 interface GamesDomainData extends Games {
-  gamesHasQuestions: (GamesHasQuestions & {
+  gamesHasQuestions?: (GamesHasQuestions & {
     question?: Questions;
   })[];
   players?: StudentsPlayGames[];
