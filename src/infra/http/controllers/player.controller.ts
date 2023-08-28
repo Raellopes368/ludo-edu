@@ -4,6 +4,7 @@ import {
   Controller,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -12,12 +13,18 @@ import { EnterInGameBody } from '../dtos/enter-in-game-body';
 import { StudentPlayGameViewModel } from '../view-models/student-play-game-view-model';
 import { JwtAuthGuard } from '@infra/auth/jwt-auth.guard';
 import { JWTReqPayload } from 'src/interfaces';
+import { JoinAGroupParams } from '../dtos/join-a-group-params';
+import { UserViewModel } from '../view-models/user-view-model';
+import { StudentJoinsAGroup } from '@app/use-cases/students/student-joins-a-group';
 
-@Controller('games/enter')
+@Controller('players')
 export class PlayerController {
-  constructor(private readonly studentEnterTheGame: StudentEnterTheGame) {}
+  constructor(
+    private readonly studentEnterTheGame: StudentEnterTheGame,
+    private studentJoinAGroup: StudentJoinsAGroup,
+  ) {}
 
-  @Post()
+  @Post('/join')
   @UseGuards(JwtAuthGuard)
   async create(
     @Body() { game_id }: EnterInGameBody,
@@ -36,6 +43,31 @@ export class PlayerController {
     } catch (error: any) {
       throw new HttpException(
         error.response || 'Não foi possível entrar no jogo',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/groups/join/:group_id')
+  async joinGroup(
+    @Param() params: JoinAGroupParams,
+    @Req() req: JWTReqPayload,
+  ) {
+    const { userId: user_id } = req.user;
+    const { group_id } = params;
+    try {
+      const { user } = await this.studentJoinAGroup.execute({
+        group_id,
+        user_id,
+      });
+
+      return {
+        user: UserViewModel.toHTTP(user),
+      };
+    } catch (error: any) {
+      throw new HttpException(
+        error.response || 'Não foi possível entrar no grupo',
         HttpStatus.BAD_REQUEST,
       );
     }
