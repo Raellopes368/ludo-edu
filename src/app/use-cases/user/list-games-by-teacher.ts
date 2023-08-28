@@ -16,7 +16,7 @@ export class ListGamesByTeacher {
     page = 1,
     per_page = 10,
   }: ListGamesByTeacherRequest) {
-    const games = await this.gameRepository.listByTeacher(
+    const { games, total_results } = await this.gameRepository.listByTeacher(
       user_id,
       page,
       per_page,
@@ -24,6 +24,7 @@ export class ListGamesByTeacher {
 
     return {
       games,
+      total_results,
     };
   }
 }

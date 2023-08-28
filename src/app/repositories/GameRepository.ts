@@ -1,4 +1,5 @@
 import { Game } from '@app/entities/game';
+import { GameResponse } from 'src/interfaces';
 
 export abstract class GameRepository {
   abstract create(game: Game): Promise<void>;
@@ -12,10 +13,12 @@ export abstract class GameRepository {
     teacher_id: string,
     page: number,
     per_page: number,
-  ): Promise<Game[]>;
+  ): Promise<GameResponse>;
+  abstract countGamesByTeacher(teacher_id: string): Promise<number>;
+  abstract countGamesByGroup(group_id: string): Promise<number>;
   abstract listByGroup(
     group_id: string,
     page: number,
     per_page: number,
-  ): Promise<Game[]>;
+  ): Promise<GameResponse>;
 }

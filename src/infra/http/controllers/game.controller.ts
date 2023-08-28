@@ -90,7 +90,7 @@ export class GameController {
   ) {
     try {
       const { page, per_page } = query;
-      const { games } = await this.listGamesByTeacher.execute({
+      const { games, total_results } = await this.listGamesByTeacher.execute({
         user_id: teacher_id,
         page: parseToNumber(page),
         per_page: parseToNumber(per_page),
@@ -98,6 +98,7 @@ export class GameController {
 
       return {
         games: games.map((game) => GameViewModel.toHTTP(game)),
+        total_results,
       };
     } catch (error: any) {
       throw new HttpException(
@@ -113,7 +114,7 @@ export class GameController {
     try {
       const { userId: user_id } = req.user;
       const { page, per_page } = query;
-      const { games } = await this.listGamesByTeacher.execute({
+      const { games, total_results } = await this.listGamesByTeacher.execute({
         user_id,
         page: parseToNumber(page),
         per_page: parseToNumber(per_page),
@@ -121,6 +122,7 @@ export class GameController {
 
       return {
         games: games.map((game) => GameViewModel.toHTTP(game)),
+        total_results,
       };
     } catch (error: any) {
       throw new HttpException(
@@ -138,7 +140,7 @@ export class GameController {
   ) {
     try {
       const { page, per_page } = query;
-      const { games } = await this.listGamesByGroup.execute({
+      const { games, total_results } = await this.listGamesByGroup.execute({
         group_id,
         page: parseToNumber(page),
         per_page: parseToNumber(per_page),
@@ -146,6 +148,7 @@ export class GameController {
 
       return {
         games: games.map((game) => GameViewModel.toHTTP(game)),
+        total_results,
       };
     } catch (error: any) {
       throw new HttpException(

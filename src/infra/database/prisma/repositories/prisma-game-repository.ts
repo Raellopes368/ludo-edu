@@ -3,6 +3,7 @@ import { GameRepository } from '@app/repositories/GameRepository';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { PrismaGameMapper } from '../mappers/prisma-game-mapper';
+import { GameResponse } from 'src/interfaces';
 
 @Injectable()
 export class PrismaGameRepository implements GameRepository {
@@ -60,36 +61,65 @@ export class PrismaGameRepository implements GameRepository {
 
     return PrismaGameMapper.toDomain(game);
   }
-  async listByTeacher(
-    teacher_id: string,
-    page: number,
-    per_page: number,
-  ): Promise<Game[]> {
-    const offset = page * per_page - per_page;
-    const games = await this.prisma.games.findMany({
-      skip: offset,
-      take: per_page,
+
+  async countGamesByTeacher(teacher_id: string): Promise<number> {
+    const total = await this.prisma.games.count({
       where: {
         teacher_user_id: teacher_id,
       },
     });
+    return total;
+  }
+  async countGamesByGroup(group_id: string): Promise<number> {
+    const total = await this.prisma.games.count({
+      where: {
+        group_id,
+      },
+    });
+    return total;
+  }
+  async listByTeacher(
+    teacher_id: string,
+    page: number,
+    per_page: number,
+  ): Promise<GameResponse> {
+    const offset = page * per_page - per_page;
+    const [games, total] = await Promise.all([
+      this.prisma.games.findMany({
+        skip: offset,
+        take: per_page,
+        where: {
+          teacher_user_id: teacher_id,
+        },
+      }),
+      this.countGamesByTeacher(teacher_id),
+    ]);
 
-    return games.map((game) => PrismaGameMapper.toDomain(game));
+    return {
+      games: games.map((game) => PrismaGameMapper.toDomain(game)),
+      total_results: total,
+    };
   }
   async listByGroup(
     group_id: string,
     page: number,
     per_page: number,
-  ): Promise<Game[]> {
+  ): Promise<GameResponse> {
     const offset = page * per_page - per_page;
-    const games = await this.prisma.games.findMany({
-      skip: offset,
-      take: per_page,
-      where: {
-        group_id,
-      },
-    });
+    const [games, total] = await Promise.all([
+      this.prisma.games.findMany({
+        skip: offset,
+        take: per_page,
+        where: {
+          group_id,
+        },
+      }),
+      this.countGamesByGroup(group_id),
+    ]);
 
-    return games.map((game) => PrismaGameMapper.toDomain(game));
+    return {
+      games: games.map((game) => PrismaGameMapper.toDomain(game)),
+      total_results: total,
+    };
   }
 }

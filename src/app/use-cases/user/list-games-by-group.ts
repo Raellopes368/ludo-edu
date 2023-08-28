@@ -12,7 +12,7 @@ export class ListGamesByGroup {
   constructor(private gameRepository: GameRepository) {}
 
   async execute({ group_id, page, per_page }: ListGamesByGroupRequest) {
-    const games = await this.gameRepository.listByGroup(
+    const { games, total_results } = await this.gameRepository.listByGroup(
       group_id,
       page,
       per_page,
@@ -20,6 +20,7 @@ export class ListGamesByGroup {
 
     return {
       games,
+      total_results,
     };
   }
 }
