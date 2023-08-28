@@ -23,6 +23,8 @@ import { ListGamesByGroupParams } from '../dtos/list-games-by-group-params';
 import { ListGamesByGroup } from '@app/use-cases/user/list-games-by-group';
 import { PaginationQuery } from '../dtos/pagination-query';
 import { parseToNumber } from '@helpers/parseToNumber';
+import { StartAGame } from '@app/use-cases/teacher/start-a-game';
+import { StartAGameBody } from '../dtos/start-a-game-body';
 
 @Controller('games')
 export class GameController {
@@ -31,6 +33,7 @@ export class GameController {
     private addQuestionsToGame: AddQuestionsToGame,
     private listGamesByTeacher: ListGamesByTeacher,
     private listGamesByGroup: ListGamesByGroup,
+    private startGame: StartAGame,
   ) {}
 
   @Post()
@@ -154,6 +157,29 @@ export class GameController {
       throw new HttpException(
         'Não foi listar os grupos desse professor',
         HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Post('/start')
+  @UseGuards(JwtAuthGuard)
+  async start(@Body() body: StartAGameBody, @Req() req: JWTReqPayload) {
+    const { game_id } = body;
+    const { userId: user_id } = req.user;
+    try {
+      const { game } = await this.startGame.execute({
+        game_id,
+        user_id,
+      });
+
+      return {
+        game: GameViewModel.toHTTP(game),
+      };
+    } catch (error: any) {
+      console.log(error);
+      throw new HttpException(
+        error.response || 'Não foi possível iniciar o jogo',
+        error.status || HttpStatus.BAD_REQUEST,
       );
     }
   }
