@@ -13,9 +13,9 @@ import { EnterInGameBody } from '../dtos/enter-in-game-body';
 import { StudentPlayGameViewModel } from '../view-models/student-play-game-view-model';
 import { JwtAuthGuard } from '@infra/auth/jwt-auth.guard';
 import { JWTReqPayload } from 'src/interfaces';
-import { JoinAGroupParams } from '../dtos/join-a-group-params';
 import { UserViewModel } from '../view-models/user-view-model';
 import { StudentJoinsAGroup } from '@app/use-cases/students/student-joins-a-group';
+import { JoinAGroupBody } from '../dtos/join-a-group-body';
 
 @Controller('players')
 export class PlayerController {
@@ -49,13 +49,10 @@ export class PlayerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/groups/join/:group_id')
-  async joinGroup(
-    @Param() params: JoinAGroupParams,
-    @Req() req: JWTReqPayload,
-  ) {
+  @Post('/groups/join')
+  async joinGroup(@Body() body: JoinAGroupBody, @Req() req: JWTReqPayload) {
     const { userId: user_id } = req.user;
-    const { group_id } = params;
+    const { group_id } = body;
     try {
       const { user } = await this.studentJoinAGroup.execute({
         group_id,
