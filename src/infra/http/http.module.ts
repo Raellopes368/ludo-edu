@@ -33,6 +33,8 @@ import { StudentJoinsAGroup } from '@app/use-cases/students/student-joins-a-grou
 import { ListGroups } from '@app/use-cases/teacher/list-groups';
 import { ListGamesByTeacher } from '@app/use-cases/user/list-games-by-teacher';
 import { ListGamesByGroup } from '@app/use-cases/user/list-games-by-group';
+import { StartAGame } from '@app/use-cases/teacher/start-a-game';
+import { CheckUserCanStartAGame } from '@app/use-cases/teacher/check-user-can-start-a-game';
 
 @Module({
   imports: [DatabaseModule],
@@ -64,6 +66,8 @@ import { ListGamesByGroup } from '@app/use-cases/user/list-games-by-group';
     ListGroups,
     ListGamesByTeacher,
     ListGamesByGroup,
+    StartAGame,
+    CheckUserCanStartAGame,
   ],
 })
 export class HttpModule {}
