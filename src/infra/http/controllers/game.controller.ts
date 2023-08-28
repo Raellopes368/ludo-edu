@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -20,6 +21,8 @@ import { ListGroupsParams } from '../dtos/list-groups-params';
 import { ListGamesByTeacher } from '@app/use-cases/user/list-games-by-teacher';
 import { ListGamesByGroupParams } from '../dtos/list-games-by-group-params';
 import { ListGamesByGroup } from '@app/use-cases/user/list-games-by-group';
+import { PaginationQuery } from '../dtos/pagination-query';
+import { parseToNumber } from '@helpers/parseToNumber';
 
 @Controller('games')
 export class GameController {
@@ -81,10 +84,16 @@ export class GameController {
   }
 
   @Get('/list/:teacher_id')
-  async listByTeacher(@Param() { teacher_id }: ListGroupsParams) {
+  async listByTeacher(
+    @Param() { teacher_id }: ListGroupsParams,
+    @Query() query: PaginationQuery,
+  ) {
     try {
+      const { page, per_page } = query;
       const { games } = await this.listGamesByTeacher.execute({
         user_id: teacher_id,
+        page: parseToNumber(page),
+        per_page: parseToNumber(per_page),
       });
 
       return {
@@ -100,10 +109,15 @@ export class GameController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/list')
-  async list(@Req() req: JWTReqPayload) {
+  async list(@Req() req: JWTReqPayload, @Query() query: PaginationQuery) {
     try {
       const { userId: user_id } = req.user;
-      const { games } = await this.listGamesByTeacher.execute({ user_id });
+      const { page, per_page } = query;
+      const { games } = await this.listGamesByTeacher.execute({
+        user_id,
+        page: parseToNumber(page),
+        per_page: parseToNumber(per_page),
+      });
 
       return {
         games: games.map((game) => GameViewModel.toHTTP(game)),
@@ -118,10 +132,16 @@ export class GameController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/list/by-group/:group_id')
-  async listByGroup(@Param() { group_id }: ListGamesByGroupParams) {
+  async listByGroup(
+    @Param() { group_id }: ListGamesByGroupParams,
+    @Query() query: PaginationQuery,
+  ) {
     try {
+      const { page, per_page } = query;
       const { games } = await this.listGamesByGroup.execute({
         group_id,
+        page: parseToNumber(page),
+        per_page: parseToNumber(per_page),
       });
 
       return {

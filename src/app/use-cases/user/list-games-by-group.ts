@@ -3,14 +3,20 @@ import { Injectable } from '@nestjs/common';
 
 interface ListGamesByGroupRequest {
   group_id: string;
+  page?: number;
+  per_page?: number;
 }
 
 @Injectable()
 export class ListGamesByGroup {
   constructor(private gameRepository: GameRepository) {}
 
-  async execute({ group_id }: ListGamesByGroupRequest) {
-    const games = await this.gameRepository.listByGroup(group_id);
+  async execute({ group_id, page, per_page }: ListGamesByGroupRequest) {
+    const games = await this.gameRepository.listByGroup(
+      group_id,
+      page,
+      per_page,
+    );
 
     return {
       games,

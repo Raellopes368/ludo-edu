@@ -60,8 +60,15 @@ export class PrismaGameRepository implements GameRepository {
 
     return PrismaGameMapper.toDomain(game);
   }
-  async listByTeacher(teacher_id: string): Promise<Game[]> {
+  async listByTeacher(
+    teacher_id: string,
+    page: number,
+    per_page: number,
+  ): Promise<Game[]> {
+    const offset = page * per_page - per_page;
     const games = await this.prisma.games.findMany({
+      skip: offset,
+      take: per_page,
       where: {
         teacher_user_id: teacher_id,
       },
@@ -69,8 +76,15 @@ export class PrismaGameRepository implements GameRepository {
 
     return games.map((game) => PrismaGameMapper.toDomain(game));
   }
-  async listByGroup(group_id: string): Promise<Game[]> {
+  async listByGroup(
+    group_id: string,
+    page: number,
+    per_page: number,
+  ): Promise<Game[]> {
+    const offset = page * per_page - per_page;
     const games = await this.prisma.games.findMany({
+      skip: offset,
+      take: per_page,
       where: {
         group_id,
       },
