@@ -30,6 +30,7 @@ import { CheckUserCanJoinTheGame } from '@app/use-cases/students/check-user-can-
 import { GetPlayerPositions } from '@app/use-cases/students/get-player-positions';
 import { PlayerController } from './controllers/player.controller';
 import { StudentJoinsAGroup } from '@app/use-cases/students/student-joins-a-group';
+import { ListGroups } from '@app/use-cases/teacher/list-groups';
 
 @Module({
   imports: [DatabaseModule],
@@ -58,6 +59,7 @@ import { StudentJoinsAGroup } from '@app/use-cases/students/student-joins-a-grou
     CheckUserCanJoinTheGame,
     GetPlayerPositions,
     StudentJoinsAGroup,
+    ListGroups,
   ],
 })
 export class HttpModule {}
