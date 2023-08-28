@@ -2,8 +2,10 @@ import { CreateGames } from '@app/use-cases/teacher/create-games';
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -14,12 +16,18 @@ import { JwtAuthGuard } from '@infra/auth/jwt-auth.guard';
 import { JWTReqPayload } from 'src/interfaces';
 import { AddQuestionsToGameBody } from '../dtos/add-questions-to-game-body';
 import { AddQuestionsToGame } from '@app/use-cases/teacher/add-questions-to-game';
+import { ListGroupsParams } from '../dtos/list-groups-params';
+import { ListGamesByTeacher } from '@app/use-cases/user/list-games-by-teacher';
+import { ListGamesByGroupParams } from '../dtos/list-games-by-group-params';
+import { ListGamesByGroup } from '@app/use-cases/user/list-games-by-group';
 
 @Controller('games')
 export class GameController {
   constructor(
     private readonly createGame: CreateGames,
     private addQuestionsToGame: AddQuestionsToGame,
+    private listGamesByTeacher: ListGamesByTeacher,
+    private listGamesByGroup: ListGamesByGroup,
   ) {}
 
   @Post()
@@ -68,6 +76,61 @@ export class GameController {
       throw new HttpException(
         error.response || 'Não foi possível adicionar essas questões',
         error.status || HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get('/list/:teacher_id')
+  async listByTeacher(@Param() { teacher_id }: ListGroupsParams) {
+    try {
+      const { games } = await this.listGamesByTeacher.execute({
+        user_id: teacher_id,
+      });
+
+      return {
+        games: games.map((game) => GameViewModel.toHTTP(game)),
+      };
+    } catch (error: any) {
+      throw new HttpException(
+        'Não foi listar os grupos desse professor',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/list')
+  async list(@Req() req: JWTReqPayload) {
+    try {
+      const { userId: user_id } = req.user;
+      const { games } = await this.listGamesByTeacher.execute({ user_id });
+
+      return {
+        games: games.map((game) => GameViewModel.toHTTP(game)),
+      };
+    } catch (error: any) {
+      throw new HttpException(
+        'Não foi listar os grupos desse professor',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/list/by-group/:group_id')
+  async listByGroup(@Param() { group_id }: ListGamesByGroupParams) {
+    try {
+      const { games } = await this.listGamesByGroup.execute({
+        group_id,
+      });
+
+      return {
+        games: games.map((game) => GameViewModel.toHTTP(game)),
+      };
+    } catch (error: any) {
+      throw new HttpException(
+        'Não foi listar os grupos desse professor',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
