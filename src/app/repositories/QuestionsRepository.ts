@@ -6,4 +6,8 @@ export abstract class QuestionsRepository {
   abstract listByGroup(group_id: string): Promise<Question[]>;
   abstract listByTeacher(teacher_id: string): Promise<Question[]>;
   abstract listByGame(group_id: string): Promise<Question[]>;
+  abstract searchForPlayerResponse(
+    player_id: string,
+    game_id: string,
+  ): Promise<Question>;
 }
