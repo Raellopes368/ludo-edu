@@ -176,7 +176,6 @@ export class GameController {
         game: GameViewModel.toHTTP(game),
       };
     } catch (error: any) {
-      console.log(error);
       throw new HttpException(
         error.response || 'Não foi possível iniciar o jogo',
         error.status || HttpStatus.BAD_REQUEST,
