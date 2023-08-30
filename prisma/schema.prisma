@@ -130,6 +130,9 @@ model QuestionOptions {
 model UserCheckOptions {
   user_check_options_id String @id
 
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
   student_user_id String
   player          StudentsPlayGames @relation(fields: [student_user_id], references: [student_play_game_id])
 
