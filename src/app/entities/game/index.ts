@@ -112,8 +112,9 @@ export class Game {
     this._players = players;
   }
 
-  start() {
+  start(current_player_id: string) {
     this.props.is_started = true;
+    this.props.current_player_id = current_player_id;
   }
 
   endGame(winner_user_id: string) {
