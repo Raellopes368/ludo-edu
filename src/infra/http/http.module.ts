@@ -35,6 +35,8 @@ import { ListGamesByTeacher } from '@app/use-cases/user/list-games-by-teacher';
 import { ListGamesByGroup } from '@app/use-cases/user/list-games-by-group';
 import { StartAGame } from '@app/use-cases/teacher/start-a-game';
 import { CheckUserCanStartAGame } from '@app/use-cases/teacher/check-user-can-start-a-game';
+import { GetQuestionToAnswer } from '@app/use-cases/students/get-question-to-answer';
+import { CheckStudentCanGetAQuestionToAnswer } from '@app/use-cases/students/check-student-can-get-a-question-to-answer';
 
 @Module({
   imports: [DatabaseModule],
@@ -68,6 +70,8 @@ import { CheckUserCanStartAGame } from '@app/use-cases/teacher/check-user-can-st
     ListGamesByGroup,
     StartAGame,
     CheckUserCanStartAGame,
+    GetQuestionToAnswer,
+    CheckStudentCanGetAQuestionToAnswer,
   ],
 })
 export class HttpModule {}
