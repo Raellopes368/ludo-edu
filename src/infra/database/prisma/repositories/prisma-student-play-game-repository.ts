@@ -15,6 +15,20 @@ export class PrismaStudentPlayGameRepository
       data: playerRaw,
     });
   }
+
+  async findFirstByGame(game_id: string): Promise<StudentsPlayGames> {
+    const player = await this.prisma.studentsPlayGames.findFirst({
+      where: {
+        game_id,
+      },
+      orderBy: {
+        game_position: 'asc',
+      },
+    });
+
+    if (!player) return null;
+    return PrismaStudentPlayGameMapper.toDomain(player);
+  }
   async findByUserIdAndGame(
     user_id: string,
     game_id: string,
