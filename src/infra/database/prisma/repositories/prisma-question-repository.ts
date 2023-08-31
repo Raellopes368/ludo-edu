@@ -5,6 +5,7 @@ import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Questions, QuestionOptions } from '@prisma/client';
+import { QuestionsReponse } from 'src/interfaces';
 
 @Injectable()
 export class PrismaQuestionRepository implements QuestionsRepository {
@@ -73,8 +74,8 @@ export class PrismaQuestionRepository implements QuestionsRepository {
     });
   }
 
-  async listByGroup(group_id: string): Promise<Question[]> {
-    const questions = await this.prisma.questions.findMany({
+  async getCountByGroup(group_id: string) {
+    const total = await this.prisma.questions.count({
       where: {
         groupsHasQuestions: {
           every: {
@@ -84,33 +85,111 @@ export class PrismaQuestionRepository implements QuestionsRepository {
       },
     });
 
-    return questions.map((question) => PrismaQuestionMapper.toDomain(question));
+    return total;
   }
-  async listByTeacher(teacher_id: string): Promise<Question[]> {
-    const questions = await this.prisma.questions.findMany({
+
+  async getCountByTeacher(teacher_id: string) {
+    const total = await this.prisma.questions.count({
       where: {
         user_id: teacher_id,
       },
     });
 
-    return questions.map((question) => PrismaQuestionMapper.toDomain(question));
+    return total;
   }
-  async listByGame(game_id: string): Promise<Question[]> {
-    const gameHasQuestions = await this.prisma.gamesHasQuestions.findMany({
+
+  async getCountByGame(game_id: string) {
+    const total = await this.prisma.gamesHasQuestions.count({
       where: {
         game_id,
       },
-      include: {
-        question: {
-          include: {
-            questionOptions: true,
-          },
-        },
-      },
     });
 
-    return gameHasQuestions.map((item) =>
-      PrismaQuestionMapper.toDomain(item.question),
-    );
+    return total;
+  }
+
+  async listByGroup(
+    group_id: string,
+    page: number,
+    per_page: number,
+  ): Promise<QuestionsReponse> {
+    const offset = page * per_page - per_page;
+    const [questions, total_results] = await Promise.all([
+      this.prisma.questions.findMany({
+        skip: offset,
+        take: per_page,
+        where: {
+          groupsHasQuestions: {
+            every: {
+              group_id,
+            },
+          },
+        },
+      }),
+      this.getCountByGroup(group_id),
+    ]);
+
+    return {
+      questions: questions.map((question) =>
+        PrismaQuestionMapper.toDomain(question),
+      ),
+      total_results,
+    };
+  }
+
+  async listByTeacher(
+    teacher_id: string,
+    page: number,
+    per_page: number,
+  ): Promise<QuestionsReponse> {
+    const offset = page * per_page - per_page;
+    const [questions, total_results] = await Promise.all([
+      this.prisma.questions.findMany({
+        skip: offset,
+        take: per_page,
+        where: {
+          user_id: teacher_id,
+        },
+      }),
+      this.getCountByTeacher(teacher_id),
+    ]);
+
+    return {
+      questions: questions.map((question) =>
+        PrismaQuestionMapper.toDomain(question),
+      ),
+      total_results,
+    };
+  }
+  async listByGame(
+    game_id: string,
+    page: number,
+    per_page: number,
+  ): Promise<QuestionsReponse> {
+    const offset = page * per_page - per_page;
+    const [gameHasQuestions, total_results] = await Promise.all([
+      this.prisma.gamesHasQuestions.findMany({
+        skip: offset,
+        take: per_page,
+        where: {
+          game_id,
+        },
+        include: {
+          question: {
+            include: {
+              questionOptions: true,
+            },
+          },
+        },
+      }),
+      this.getCountByGame(game_id),
+    ]);
+
+    return {
+      questions: gameHasQuestions.map((item) =>
+        PrismaQuestionMapper.toDomain(item.question),
+      ),
+      total_results,
+    };
   }
 }
