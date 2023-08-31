@@ -20,7 +20,7 @@ export class AddQuestionsToGroup {
     group_id,
     questions_id,
   }: AddQuestionsToGroupRequest) {
-    const error = this.checkUserCanAddQuestionsToGroup.execute({
+    const error = await this.checkUserCanAddQuestionsToGroup.execute({
       user_id,
       group_id,
     });
