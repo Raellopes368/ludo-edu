@@ -1,4 +1,5 @@
 import { Game } from '@app/entities/game';
+import { Question } from '@app/entities/question';
 
 export interface JWTReqPayload {
   user: {
@@ -13,6 +14,11 @@ export enum UserType {
 
 export interface GameResponse {
   games: Game[];
+  total_results: number;
+}
+
+export interface QuestionsReponse {
+  questions: Question[];
   total_results: number;
 }
 
