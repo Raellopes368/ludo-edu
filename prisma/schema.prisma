@@ -106,11 +106,9 @@ model Questions {
   user_id String
   teacher User   @relation(fields: [user_id], references: [user_id])
 
-  group_id String
-  group    Groups @relation(fields: [group_id], references: [group_id])
-
-  gamesHasQuestions GamesHasQuestions[]
-  questionOptions   QuestionOptions[]
+  gamesHasQuestions  GamesHasQuestions[]
+  questionOptions    QuestionOptions[]
+  groupsHasQuestions GroupsHasQuestions[]
 
   @@map("questions")
 }
@@ -142,16 +140,29 @@ model UserCheckOptions {
   @@map("user_check_options")
 }
 
+model GroupsHasQuestions {
+  groups_has_questions String @id @default(uuid())
+
+  question_id String
+  question    Questions @relation(fields: [question_id], references: [question_id])
+
+  group_id String
+  group    Groups @relation(fields: [group_id], references: [group_id])
+
+  @@unique([question_id, group_id])
+  @@map("groups_has_questions")
+}
+
 model Groups {
   group_id    String @id
   name        String @unique
   description String
 
   teacher_owner_user_id String
-  teacher_owner         User        @relation("teacher_groups", fields: [teacher_owner_user_id], references: [user_id])
-  students              User[]      @relation("students_groups")
-  questions             Questions[]
+  teacher_owner         User                 @relation("teacher_groups", fields: [teacher_owner_user_id], references: [user_id])
+  students              User[]               @relation("students_groups")
   games                 Games[]
+  groupsHasQuestions    GroupsHasQuestions[]
 
   @@map("groups")
 }

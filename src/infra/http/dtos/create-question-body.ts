@@ -9,8 +9,4 @@ export class CreateQuestionBody {
   @IsIn([1, 2, 3])
   @IsNotEmpty()
   level: number;
-
-  @IsString()
-  @IsNotEmpty()
-  group_id: string;
 }

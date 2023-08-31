@@ -22,7 +22,6 @@ export class PrismaQuestionRepository implements QuestionsRepository {
       },
       include: {
         questionOptions: true,
-        group: true,
         teacher: true,
       },
     });
@@ -58,24 +57,15 @@ export class PrismaQuestionRepository implements QuestionsRepository {
 
     if (!questions.length) return null;
 
-    const [{ question_id, questionContent, group_id, level, user_id }] =
-      questions;
+    const [{ question_id, questionContent, level, user_id }] = questions;
 
     return PrismaQuestionMapper.toDomain({
       question_id,
       content: questionContent,
-      group_id: group_id,
       level,
       user_id,
       questionOptions: questions.map(
-        ({
-          question_id,
-          questionContent,
-          group_id,
-          level,
-          user_id,
-          ...rest
-        }) => ({
+        ({ question_id, questionContent, level, user_id, ...rest }) => ({
           ...rest,
           question_id,
         }),
@@ -86,11 +76,14 @@ export class PrismaQuestionRepository implements QuestionsRepository {
   async listByGroup(group_id: string): Promise<Question[]> {
     const questions = await this.prisma.questions.findMany({
       where: {
-        group_id,
+        groupsHasQuestions: {
+          every: {
+            group_id,
+          },
+        },
       },
       include: {
         questionOptions: true,
-        group: true,
         teacher: true,
       },
     });
@@ -104,25 +97,28 @@ export class PrismaQuestionRepository implements QuestionsRepository {
       },
       include: {
         questionOptions: true,
-        group: true,
         teacher: true,
       },
     });
 
     return questions.map((question) => PrismaQuestionMapper.toDomain(question));
   }
-  async listByGame(group_id: string): Promise<Question[]> {
-    const questions = await this.prisma.questions.findMany({
+  async listByGame(game_id: string): Promise<Question[]> {
+    const gameHasQuestions = await this.prisma.gamesHasQuestions.findMany({
       where: {
-        group_id,
+        game_id,
       },
       include: {
-        questionOptions: true,
-        group: true,
-        teacher: true,
+        question: {
+          include: {
+            questionOptions: true,
+          },
+        },
       },
     });
 
-    return questions.map((question) => PrismaQuestionMapper.toDomain(question));
+    return gameHasQuestions.map((item) =>
+      PrismaQuestionMapper.toDomain(item.question),
+    );
   }
 }

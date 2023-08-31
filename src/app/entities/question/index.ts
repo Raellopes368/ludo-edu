@@ -6,7 +6,6 @@ interface QuestionProps {
   content: string;
   level: number;
   user_id: string;
-  group_id: string;
 }
 
 export class Question {
@@ -46,14 +45,6 @@ export class Question {
 
   set user_id(level: string) {
     this.props.user_id = level;
-  }
-
-  get group_id() {
-    return this.props.group_id;
-  }
-
-  set group_id(level: string) {
-    this.props.group_id = level;
   }
 
   get group() {

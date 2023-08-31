@@ -7,7 +7,6 @@ export class QuestionViewModel {
     return {
       content: question.content,
       group: question.group ? GroupViewModel.toHTTP(question.group) : null,
-      group_id: question.group_id,
       level: question.level,
       id: question.id,
       teacher_id: question.user_id,

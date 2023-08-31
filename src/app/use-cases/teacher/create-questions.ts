@@ -6,7 +6,6 @@ interface CreateQuestionRequest {
   content: string;
   level: number;
   user_id: string;
-  group_id: string;
 }
 
 @Injectable()

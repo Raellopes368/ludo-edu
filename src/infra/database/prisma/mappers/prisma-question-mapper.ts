@@ -16,7 +16,6 @@ export class PrismaQuestionMapper {
   static toPrisma(question: Question): QuestionsRaw {
     return {
       content: question.content,
-      group_id: question.group_id,
       level: question.level,
       question_id: question.id,
       user_id: question.user_id,
@@ -27,7 +26,6 @@ export class PrismaQuestionMapper {
     const questionDomain = new Question(
       {
         content: question.content,
-        group_id: question.group_id,
         level: question.level,
         user_id: question.user_id,
       },
