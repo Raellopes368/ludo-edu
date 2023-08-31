@@ -13,10 +13,26 @@ export class PrismaGroupRepository implements GroupsRepository {
       data: groupRaw,
     });
   }
+
+  async addQuestionsToGroup(
+    group_id: string,
+    questions_id: string[],
+  ): Promise<void> {
+    await this.prisma.groupsHasQuestions.createMany({
+      data: questions_id.map((question_id) => ({
+        group_id,
+        question_id,
+      })),
+    });
+  }
+
   async getByGroupId(group_id: string): Promise<Groups> {
     const group = await this.prisma.groups.findUnique({
       where: {
         group_id,
+      },
+      include: {
+        teacher_owner: true,
       },
     });
 
