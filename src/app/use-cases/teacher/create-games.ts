@@ -19,11 +19,12 @@ export class CreateGames {
     amount_games,
   }: CreateGamesRequest) {
     const games = Array.from({ length: amount_games }).map(
-      () =>
+      (_, index) =>
         new Game({
           game_level,
           group_id,
           teacher_user_id,
+          name: `grupo ${index + 1}`,
         }),
     );
 

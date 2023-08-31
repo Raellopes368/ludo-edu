@@ -13,6 +13,7 @@ interface GameProps {
   winner_user_id?: string;
   current_player_id?: string;
   group_id: string;
+  name: string;
 }
 
 export class Game {
@@ -62,6 +63,14 @@ export class Game {
 
   set winner_user_id(winner_user_id: string) {
     this.props.winner_user_id = winner_user_id;
+  }
+
+  get name(): string {
+    return this.props.name || null;
+  }
+
+  set name(name: string) {
+    this.props.name = name;
   }
 
   get group_id(): string {

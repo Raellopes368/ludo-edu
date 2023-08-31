@@ -26,6 +26,7 @@ export class PrismaGameMapper {
       is_started: game.is_started,
       teacher_user_id: game.teacher_user_id,
       winner_user_id: game.winner_user_id,
+      name: game.name,
     };
   }
   static toDomain(game: GamesDomainData) {
@@ -38,6 +39,7 @@ export class PrismaGameMapper {
         current_player_id: game.current_player_id,
         is_started: game.is_started,
         winner_user_id: game.winner_user_id,
+        name: game.name,
       },
       game.game_id,
     );

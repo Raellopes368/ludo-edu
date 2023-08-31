@@ -56,6 +56,7 @@ model Games {
   is_started Boolean?
   created_at DateTime @default(now())
   game_level Int
+  name       String
 
   teacher_user_id String
   teacher         User                @relation("teacher", fields: [teacher_user_id], references: [user_id])
@@ -141,7 +142,7 @@ model UserCheckOptions {
 }
 
 model GroupsHasQuestions {
-  groups_has_questions String @id @default(uuid())
+  groups_has_questions_id String @id @default(uuid())
 
   question_id String
   question    Questions @relation(fields: [question_id], references: [question_id])
