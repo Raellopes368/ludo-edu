@@ -82,10 +82,6 @@ export class PrismaQuestionRepository implements QuestionsRepository {
           },
         },
       },
-      include: {
-        questionOptions: true,
-        teacher: true,
-      },
     });
 
     return questions.map((question) => PrismaQuestionMapper.toDomain(question));
@@ -94,10 +90,6 @@ export class PrismaQuestionRepository implements QuestionsRepository {
     const questions = await this.prisma.questions.findMany({
       where: {
         user_id: teacher_id,
-      },
-      include: {
-        questionOptions: true,
-        teacher: true,
       },
     });
 
