@@ -45,13 +45,14 @@ export class StudentEnterTheGame {
       finish_house: housePosition.end,
     });
 
+    await this.studentPlayGameRepository.create(player);
+
     const { piece } = await this.createAPiece.execute({
       student_play_game_id: player.id,
     });
 
     player.piece = piece;
 
-    await this.studentPlayGameRepository.create(player);
     return {
       player,
     };
