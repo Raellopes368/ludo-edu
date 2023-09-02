@@ -3,6 +3,7 @@ import { CheckUserCanJoinTheGame } from './check-user-can-join-the-game';
 import { GetPlayerPositions } from './get-player-positions';
 import { StudentPlayGameRepository } from '@app/repositories/StudentPlayGameRepository';
 import { StudentsPlayGames } from '@app/entities/studentsPlayGames';
+import { CreateAPiece } from '../system/create-a-piece';
 
 interface StudentEnterTheGameRequest {
   player_user_id: string;
@@ -19,6 +20,7 @@ export class StudentEnterTheGame {
     private studentPlayGameRepository: StudentPlayGameRepository,
     private checkUserCanJoinTheGame: CheckUserCanJoinTheGame,
     private getPlayerPositions: GetPlayerPositions,
+    private createAPiece: CreateAPiece,
   ) {}
   async execute({
     player_user_id,
@@ -42,6 +44,12 @@ export class StudentEnterTheGame {
       start_house: housePosition.start,
       finish_house: housePosition.end,
     });
+
+    const { piece } = await this.createAPiece.execute({
+      student_play_game_id: player.id,
+    });
+
+    player.piece = piece;
 
     await this.studentPlayGameRepository.create(player);
     return {
