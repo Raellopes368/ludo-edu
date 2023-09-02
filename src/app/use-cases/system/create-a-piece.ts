@@ -3,8 +3,6 @@ import { PieceRepository } from '@app/repositories/PieceRepository';
 import { Injectable } from '@nestjs/common';
 
 interface CreateAPieceRequest {
-  house_position: number;
-  finish_line_position: number;
   student_play_game_id: string;
 }
 
@@ -12,14 +10,10 @@ interface CreateAPieceRequest {
 export class CreateAPiece {
   constructor(private pieceRepository: PieceRepository) {}
 
-  async execute({
-    finish_line_position,
-    house_position,
-    student_play_game_id,
-  }: CreateAPieceRequest) {
+  async execute({ student_play_game_id }: CreateAPieceRequest) {
     const piece = new Piece({
-      finish_line_position,
-      house_position,
+      finish_line_position: 0,
+      house_position: 0,
       student_play_game_id,
       is_finish_line: false,
       is_started: false,
