@@ -18,15 +18,15 @@ export class CheckStudentCanGetAQuestionToAnswer {
     game_id,
     user_id,
   }: CheckStudentCanGetAQuestionToAnswerRequest) {
-    const [question, user] = await Promise.all([
+    const [game, user] = await Promise.all([
       this.gameRepository.findById(game_id),
       this.studentPlayGameRepository.findByUserIdAndGame(user_id, game_id),
     ]);
 
-    if (!question || !user) return 'Erro ao validar jogo!';
-    if (!question.is_started) return 'Jogo não iniciado';
-    if (!!question.winner_user_id) return 'Jogo finalizado';
-    if (question.current_player_id !== user.id) return 'Ainda não é sua vez';
+    if (!game || !user) return 'Erro ao validar jogo!';
+    if (!game.is_started) return 'Jogo não iniciado';
+    if (!!game.winner_user_id) return 'Jogo finalizado';
+    if (game.current_player_id !== user.id) return 'Ainda não é sua vez';
 
     return null;
   }
