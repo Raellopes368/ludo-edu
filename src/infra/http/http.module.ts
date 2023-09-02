@@ -43,6 +43,7 @@ import { ListQuestions } from '@app/use-cases/teacher/list-questions';
 import { CheckUserCanAnswerQuestions } from '@app/use-cases/students/check-user-can-answer-question';
 import { SetNextCurrentPlayer } from '@app/use-cases/students/set-next-current-player';
 import { AnswerQuestions } from '@app/use-cases/students/answer-questions';
+import { CreateAPiece } from '@app/use-cases/system/create-a-piece';
 
 @Module({
   imports: [DatabaseModule],
@@ -84,6 +85,7 @@ import { AnswerQuestions } from '@app/use-cases/students/answer-questions';
     CheckUserCanAnswerQuestions,
     SetNextCurrentPlayer,
     AnswerQuestions,
+    CreateAPiece,
   ],
 })
 export class HttpModule {}
