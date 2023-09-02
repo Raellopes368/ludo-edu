@@ -1,27 +1,29 @@
+import { AnswerQuestions } from '@app/use-cases/students/answer-questions';
 import { StudentEnterTheGame } from '@app/use-cases/students/student-enter-the-game';
+import { StudentJoinsAGroup } from '@app/use-cases/students/student-joins-a-group';
+import { JwtAuthGuard } from '@infra/auth/jwt-auth.guard';
 import {
   Body,
   Controller,
   HttpException,
   HttpStatus,
-  Param,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { EnterInGameBody } from '../dtos/enter-in-game-body';
-import { StudentPlayGameViewModel } from '../view-models/student-play-game-view-model';
-import { JwtAuthGuard } from '@infra/auth/jwt-auth.guard';
 import { JWTReqPayload } from 'src/interfaces';
-import { UserViewModel } from '../view-models/user-view-model';
-import { StudentJoinsAGroup } from '@app/use-cases/students/student-joins-a-group';
+import { AnswerQuestionBody } from '../dtos/answer-question-body';
+import { EnterInGameBody } from '../dtos/enter-in-game-body';
 import { JoinAGroupBody } from '../dtos/join-a-group-body';
+import { StudentPlayGameViewModel } from '../view-models/student-play-game-view-model';
+import { UserViewModel } from '../view-models/user-view-model';
 
 @Controller('players')
 export class PlayerController {
   constructor(
     private readonly studentEnterTheGame: StudentEnterTheGame,
     private studentJoinAGroup: StudentJoinsAGroup,
+    private answerQuestion: AnswerQuestions,
   ) {}
 
   @Post('/join')
@@ -65,6 +67,27 @@ export class PlayerController {
     } catch (error: any) {
       throw new HttpException(
         error.response || 'Não foi possível entrar no grupo',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Post('/answer/questions')
+  @UseGuards(JwtAuthGuard)
+  async answer(@Body() body: AnswerQuestionBody, @Req() req: JWTReqPayload) {
+    const { userId: user_id } = req.user;
+    try {
+      const { points } = await this.answerQuestion.execute({
+        ...body,
+        user_id,
+      });
+
+      return {
+        points,
+      };
+    } catch (error: any) {
+      throw new HttpException(
+        error.response || 'Não foi responder a pergunta',
         HttpStatus.BAD_REQUEST,
       );
     }
