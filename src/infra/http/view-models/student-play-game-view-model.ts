@@ -1,8 +1,9 @@
 import { StudentsPlayGames } from '@app/entities/studentsPlayGames';
+import { PieceViewModel } from './piece-view-model';
 
 export class StudentPlayGameViewModel {
   static toHTTP(player: StudentsPlayGames) {
-    return {
+    const playerData: any = {
       id: player.id,
       start_house: player.start_house,
       finish_house: player.finish_house,
@@ -10,5 +11,9 @@ export class StudentPlayGameViewModel {
       game_position: player.game_position,
       player_user_id: player.player_user_id,
     };
+
+    if (player.piece) playerData.piece = PieceViewModel.toHTTP(player.piece);
+
+    return playerData;
   }
 }
