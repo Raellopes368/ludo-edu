@@ -28,7 +28,6 @@ export class AnswerQuestions {
   async execute({
     game_id,
     user_id,
-    question_id,
     question_option_id,
   }: AnswerQuestionsRequest) {
     const [game, player] = await Promise.all([
@@ -42,25 +41,12 @@ export class AnswerQuestions {
 
     if (error) throw new HttpException(error, HttpStatus.BAD_REQUEST);
 
-    const alreadyExistsAnswer =
-      await this.userCheckOptionsRepository.findByQuestionAndGame(
-        question_id,
-        game_id,
-      );
+    const userCheckOptions = new UserCheckOptions({
+      question_option_id,
+      student_user_id: player.id,
+    });
 
-    if (alreadyExistsAnswer) {
-      alreadyExistsAnswer.question_option_id = question_option_id;
-      alreadyExistsAnswer.updatedAt = new Date();
-
-      await this.userCheckOptionsRepository.update(alreadyExistsAnswer);
-    } else {
-      const userCheckOptions = new UserCheckOptions({
-        question_option_id,
-        student_user_id: player.id,
-      });
-
-      await this.userCheckOptionsRepository.create(userCheckOptions);
-    }
+    await this.userCheckOptionsRepository.create(userCheckOptions);
 
     const questionOption = await this.questionOptionsRepository.findById(
       question_option_id,
