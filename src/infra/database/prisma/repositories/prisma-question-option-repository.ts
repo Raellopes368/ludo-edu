@@ -28,4 +28,16 @@ export class PrismaQuestionOptionRepository
       data: questionOptionRaw,
     });
   }
+
+  async findById(question_option_id: string): Promise<QuestionOptions> {
+    const questionOption = await this.prisma.questionOptions.findUnique({
+      where: {
+        question_option_id,
+      },
+    });
+
+    if (!questionOption) return null;
+
+    return PrismaQuestionOptionsMapper.toDomain(questionOption);
+  }
 }
