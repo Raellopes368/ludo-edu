@@ -18,6 +18,8 @@ import { PrismaGameRepository } from './prisma/repositories/prisma-game-reposito
 
 import { StudentPlayGameRepository } from '@app/repositories/StudentPlayGameRepository';
 import { PrismaStudentPlayGameRepository } from './prisma/repositories/prisma-student-play-game-repository';
+import { UserCheckOptionsRepository } from '@app/repositories/UserCheckOptionsRepository';
+import { PrismaUserCheckOptionsRepository } from './prisma/repositories/prisma-user-check-option-repository';
 
 @Module({
   providers: [
@@ -46,6 +48,10 @@ import { PrismaStudentPlayGameRepository } from './prisma/repositories/prisma-st
       provide: StudentPlayGameRepository,
       useClass: PrismaStudentPlayGameRepository,
     },
+    {
+      provide: UserCheckOptionsRepository,
+      useClass: PrismaUserCheckOptionsRepository,
+    },
   ],
   exports: [
     UserRepository,
@@ -54,6 +60,7 @@ import { PrismaStudentPlayGameRepository } from './prisma/repositories/prisma-st
     QuestionOptionRepository,
     GameRepository,
     StudentPlayGameRepository,
+    UserCheckOptionsRepository,
   ],
 })
 export class DatabaseModule {}

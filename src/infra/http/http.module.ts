@@ -40,6 +40,9 @@ import { CheckStudentCanGetAQuestionToAnswer } from '@app/use-cases/students/che
 import { CheckUserCanAddQuestionsToGroup } from '@app/use-cases/teacher/check-user-can-add-questions-to-group';
 import { AddQuestionsToGroup } from '@app/use-cases/teacher/add-questions-to-group';
 import { ListQuestions } from '@app/use-cases/teacher/list-questions';
+import { CheckUserCanAnswerQuestions } from '@app/use-cases/students/check-user-can-answer-question';
+import { SetNextCurrentPlayer } from '@app/use-cases/students/set-next-current-player';
+import { AnswerQuestions } from '@app/use-cases/students/answer-questions';
 
 @Module({
   imports: [DatabaseModule],
@@ -78,6 +81,9 @@ import { ListQuestions } from '@app/use-cases/teacher/list-questions';
     CheckUserCanAddQuestionsToGroup,
     AddQuestionsToGroup,
     ListQuestions,
+    CheckUserCanAnswerQuestions,
+    SetNextCurrentPlayer,
+    AnswerQuestions,
   ],
 })
 export class HttpModule {}
