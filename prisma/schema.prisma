@@ -44,7 +44,7 @@ model StudentsPlayGames {
   playing Games[] @relation("playing")
 
   gamesWon         Games[]            @relation("winner")
-  pieces           Pieces[]
+  piece            Pieces?
   userCheckOptions UserCheckOptions[]
 
   @@unique([player_user_id, game_id])
@@ -84,6 +84,7 @@ model Pieces {
   student_play_game_id String
   player_owner         StudentsPlayGames @relation(fields: [student_play_game_id], references: [student_play_game_id])
 
+  @@unique([student_play_game_id])
   @@map("pieces")
 }
 

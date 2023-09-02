@@ -21,6 +21,9 @@ export class PrismaStudentPlayGameRepository
       where: {
         game_id,
       },
+      include: {
+        piece: true,
+      },
       orderBy: {
         game_position: 'asc',
       },
@@ -37,6 +40,9 @@ export class PrismaStudentPlayGameRepository
       where: {
         AND: [{ player_user_id: user_id }, { game_id }],
       },
+      include: {
+        piece: true,
+      },
     });
 
     if (!player) return null;
@@ -46,6 +52,9 @@ export class PrismaStudentPlayGameRepository
     const players = await this.prisma.studentsPlayGames.findMany({
       where: {
         game_id,
+      },
+      include: {
+        piece: true,
       },
     });
 
