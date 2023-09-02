@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { Game } from '../game';
 import { User } from '../user';
+import { Piece } from '../piece';
 
 interface StudentsPlayGamesProps {
   game_position: number;
@@ -15,6 +16,7 @@ export class StudentsPlayGames {
   private _id: string;
   private _student: User;
   private _game: Game;
+  private _piece: Piece;
 
   constructor(props: StudentsPlayGamesProps, id?: string) {
     this.props = props;
@@ -75,5 +77,13 @@ export class StudentsPlayGames {
 
   set game(game: Game) {
     this._game = game;
+  }
+
+  get piece(): Piece {
+    return this._piece;
+  }
+
+  set piece(piece: Piece) {
+    this._piece = piece;
   }
 }
