@@ -23,6 +23,7 @@ export class Game {
   private _group: Groups;
   private _questions: Question[];
   private _players: StudentsPlayGames[];
+  private _current_player: StudentsPlayGames;
 
   constructor(props: Replace<GameProps, { created_at?: Date }>, id?: string) {
     this.props = { ...props, created_at: props.created_at ?? new Date() };
@@ -87,6 +88,14 @@ export class Game {
 
   set current_player_id(current_player_id: string) {
     this.props.current_player_id = current_player_id;
+  }
+
+  get current_player() {
+    return this._current_player;
+  }
+
+  set current_player(current_player: StudentsPlayGames) {
+    this._current_player = current_player;
   }
 
   get teacher(): User {
