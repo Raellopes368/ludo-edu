@@ -50,7 +50,20 @@ export class PrismaGameRepository implements GameRepository {
         game_id,
       },
       include: {
-        players: true,
+        players: {
+          include: {
+            _count: {
+              select: {
+                userCheckOptions: {
+                  where: {
+                    is_invalid: false,
+                  },
+                },
+              },
+            },
+            player: true,
+          },
+        },
         current_player: true,
         gamesHasQuestions: {
           include: {
@@ -68,8 +81,54 @@ export class PrismaGameRepository implements GameRepository {
     });
 
     if (!game) return null;
+    const { players, ...gameData } = game;
 
-    return PrismaGameMapper.toDomain(game);
+    return PrismaGameMapper.toDomain({
+      ...gameData,
+      players: players.map(({ _count, ...player }) => ({
+        ...player,
+        points: _count.userCheckOptions,
+      })),
+    });
+  }
+
+  async getById(game_id: string): Promise<Game> {
+    const game = await this.prisma.games.findUnique({
+      where: {
+        game_id,
+      },
+      include: {
+        players: {
+          include: {
+            _count: {
+              select: {
+                userCheckOptions: {
+                  where: {
+                    is_invalid: false,
+                  },
+                },
+              },
+            },
+            player: true,
+          },
+        },
+        current_player: true,
+        group: true,
+        teacher: true,
+        winner: true,
+      },
+    });
+
+    if (!game) return null;
+    const { players, ...gameData } = game;
+
+    return PrismaGameMapper.toDomain({
+      ...gameData,
+      players: players.map(({ _count, ...player }) => ({
+        ...player,
+        points: _count.userCheckOptions,
+      })),
+    });
   }
 
   async countGamesByTeacher(teacher_id: string): Promise<number> {

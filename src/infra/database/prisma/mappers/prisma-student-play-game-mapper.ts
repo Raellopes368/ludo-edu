@@ -16,7 +16,9 @@ export class PrismaStudentPlayGameMapper {
       student_play_game_id: player.id,
     };
   }
-  static toDomain(player: StudentsPlayGamesRaw & { piece?: Pieces }) {
+  static toDomain(
+    player: StudentsPlayGamesRaw & { piece?: Pieces; points?: number },
+  ) {
     const playerDomain = new StudentsPlayGames(
       {
         finish_house: player.finish_house,
@@ -24,6 +26,7 @@ export class PrismaStudentPlayGameMapper {
         game_position: player.game_position,
         player_user_id: player.player_user_id,
         start_house: player.start_house,
+        points: player.points,
       },
       player.student_play_game_id,
     );

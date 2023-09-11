@@ -1,14 +1,13 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { CheckUserCanJoinTheGame } from './check-user-can-join-the-game';
-import { GetPlayerPositions } from './get-player-positions';
-import { StudentPlayGameRepository } from '@app/repositories/StudentPlayGameRepository';
 import { StudentsPlayGames } from '@app/entities/studentsPlayGames';
+import { StudentPlayGameRepository } from '@app/repositories/StudentPlayGameRepository';
+import { SocketGateway } from '@infra/websocket/socket.gateway';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { CreateAPiece } from '../system/create-a-piece';
 import { SendWebsocketEvent } from '../system/send-websocket-event';
-import { UserRepository } from '@app/repositories/UserRepository';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
-import { SocketGateway } from '@infra/websocket/socket.gateway';
+import { CheckUserCanJoinTheGame } from './check-user-can-join-the-game';
+import { GetPlayerPositions } from './get-player-positions';
 
 interface StudentEnterTheGameRequest {
   player_user_id: string;

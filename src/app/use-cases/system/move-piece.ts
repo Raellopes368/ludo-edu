@@ -3,9 +3,15 @@ import { QuestionOptions } from '@app/entities/question/QuestionOption';
 import { StudentsPlayGames } from '@app/entities/studentsPlayGames';
 import { GameRepository } from '@app/repositories/GameRepository';
 import { PieceRepository } from '@app/repositories/PieceRepository';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { SendWebsocketEvent } from './send-websocket-event';
 import { GameLimit } from 'src/interfaces';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { PieceViewModel } from '@infra/http/view-models/piece-view-model';
+import { GameViewModel } from '@infra/http/view-models/game-view-model';
+import { StudentPlayGameViewModel } from '@infra/http/view-models/student-play-game-view-model';
+import { UserCheckOptionsRepository } from '@app/repositories/UserCheckOptionsRepository';
 
 interface MovePieceRequest {
   game: Game;
@@ -21,7 +27,9 @@ export class MovePiece {
   constructor(
     private pieceRepository: PieceRepository,
     private gameRepository: GameRepository,
+    private userCheckOptionsRepository: UserCheckOptionsRepository,
     private sendWebsocketEvent: SendWebsocketEvent,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
   async execute({ game, player, questionOption }: MovePieceRequest) {
     const piece = await this.pieceRepository.findByGameAndPlayer(
@@ -56,9 +64,9 @@ export class MovePiece {
           room: game.id,
           event: 'end-game',
           data: {
-            piece,
-            game,
-            winner: player,
+            piece: PieceViewModel.toHTTP(piece),
+            game: GameViewModel.toHTTP(game),
+            winner: StudentPlayGameViewModel.toHTTP(player),
           },
         });
       }
@@ -77,8 +85,8 @@ export class MovePiece {
           room: game.id,
           event: 'move-to-first-position',
           data: {
-            piece,
-            player,
+            piece: PieceViewModel.toHTTP(piece),
+            player: StudentPlayGameViewModel.toHTTP(player),
           },
         });
       }
@@ -86,9 +94,12 @@ export class MovePiece {
     }
 
     // verifica se os pontos passaram do casa final do jogador
+    const passedMaxHouses = await this.cacheManager.get(piece.id);
+
     if (
-      possibleNextPosition > GameLimit.MAX_HOUSES &&
-      possibleNextPosition > player.finish_house
+      (Boolean(passedMaxHouses) ||
+        possibleNextPosition > GameLimit.MAX_HOUSES) &&
+      nextPosition >= player.start_house
     ) {
       piece.finish_line_position = player.game_position;
       piece.is_finish_line = true;
@@ -98,12 +109,15 @@ export class MovePiece {
         room: game.id,
         event: 'move-to-finish-line',
         data: {
-          piece,
-          player,
+          piece: PieceViewModel.toHTTP(piece),
+          player: StudentPlayGameViewModel.toHTTP(player),
         },
       });
       return;
     }
+
+    if (possibleNextPosition > GameLimit.MAX_HOUSES)
+      await this.cacheManager.set(piece.id, 'true');
 
     piece.house_position = nextPosition;
 
@@ -113,7 +127,7 @@ export class MovePiece {
       room: game.id,
       event: 'move-piece',
       data: {
-        piece,
+        piece: PieceViewModel.toHTTP(piece),
       },
     });
 
@@ -128,13 +142,19 @@ export class MovePiece {
       if (pieceInSameHouse && pieceInSameHouse.id !== piece.id) {
         pieceInSameHouse.house_position = 0;
         pieceInSameHouse.is_started = false;
-        await this.pieceRepository.update(pieceInSameHouse);
+        await Promise.all([
+          this.cacheManager.del(pieceInSameHouse.id),
+          this.pieceRepository.update(pieceInSameHouse),
+          this.userCheckOptionsRepository.invalidateByUser(
+            pieceInSameHouse.student_play_game_id,
+          ),
+        ]);
 
         this.sendWebsocketEvent.execute({
           room: game.id,
           event: 'refresh-piece',
           data: {
-            piece: pieceInSameHouse,
+            piece: PieceViewModel.toHTTP(pieceInSameHouse),
           },
         });
       }

@@ -61,11 +61,23 @@ export class PrismaUserCheckOptionsRepository
             player: {
               game_id,
             },
+            is_invalid: false,
           },
         },
       },
     });
 
     return points;
+  }
+
+  async invalidateByUser(player_id: string): Promise<void> {
+    await this.prisma.userCheckOptions.updateMany({
+      where: {
+        student_user_id: player_id,
+      },
+      data: {
+        is_invalid: true,
+      },
+    });
   }
 }

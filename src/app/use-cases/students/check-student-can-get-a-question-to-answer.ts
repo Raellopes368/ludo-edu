@@ -22,7 +22,6 @@ export class CheckStudentCanGetAQuestionToAnswer {
       this.gameRepository.findById(game_id),
       this.studentPlayGameRepository.findByUserIdAndGame(user_id, game_id),
     ]);
-
     if (!game || !user) return 'Erro ao validar jogo!';
     if (!game.is_started) return 'Jogo não iniciado';
     if (!!game.winner_user_id) return 'Jogo finalizado';

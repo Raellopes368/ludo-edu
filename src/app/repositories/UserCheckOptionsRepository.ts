@@ -11,4 +11,5 @@ export abstract class UserCheckOptionsRepository {
     student_user_id: string,
     game_id: string,
   ): Promise<number>;
+  abstract invalidateByUser(player_id: string): Promise<void>;
 }

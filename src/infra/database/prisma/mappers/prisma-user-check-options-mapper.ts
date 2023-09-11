@@ -9,6 +9,7 @@ export class PrismaUserCheckOptionsMapper {
       question_option_id: userCheckOptions.question_option_id,
       student_user_id: userCheckOptions.student_user_id,
       user_check_options_id: userCheckOptions.id,
+      is_invalid: false,
     };
   }
   static toDomain(userCheckOptions: UserCheckOptionsRaw) {

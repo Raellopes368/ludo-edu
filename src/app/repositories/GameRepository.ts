@@ -10,6 +10,7 @@ export abstract class GameRepository {
   ): Promise<void>;
   abstract createMany(game: Game[]): Promise<void>;
   abstract findById(game_id: string): Promise<Game | null>;
+  abstract getById(game_id: string): Promise<Game | null>;
   abstract listByTeacher(
     teacher_id: string,
     page: number,

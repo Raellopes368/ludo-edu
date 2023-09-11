@@ -7,6 +7,8 @@ import { QuestionOptionRepository } from '@app/repositories/QuestionOptionReposi
 import { UserCheckOptions } from '@app/entities/userCheckOptions';
 import { StudentPlayGameRepository } from '@app/repositories/StudentPlayGameRepository';
 import { MovePiece } from '../system/move-piece';
+import { SendWebsocketEvent } from '../system/send-websocket-event';
+import { GameViewModel } from '@infra/http/view-models/game-view-model';
 
 interface AnswerQuestionsRequest {
   user_id: string;
@@ -25,6 +27,7 @@ export class AnswerQuestions {
     private checkUserCanAnswerQuestions: CheckUserCanAnswerQuestions,
     private setNextCurrentPlayer: SetNextCurrentPlayer,
     private movePiece: MovePiece,
+    private sendWebsocketEvent: SendWebsocketEvent,
   ) {}
 
   async execute({
@@ -64,6 +67,16 @@ export class AnswerQuestions {
     await this.setNextCurrentPlayer.execute({
       game,
       questionOption,
+    });
+
+    const updatedGame = await this.gameRepository.getById(game_id);
+
+    await this.sendWebsocketEvent.execute({
+      data: {
+        game: GameViewModel.toHTTP(updatedGame),
+      },
+      event: 'game-status',
+      room: game.id,
     });
 
     return {

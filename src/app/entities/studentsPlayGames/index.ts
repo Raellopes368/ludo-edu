@@ -9,6 +9,7 @@ interface StudentsPlayGamesProps {
   finish_house: number;
   player_user_id: string;
   game_id: string;
+  points?: number;
 }
 
 export class StudentsPlayGames {
@@ -85,5 +86,13 @@ export class StudentsPlayGames {
 
   set piece(piece: Piece) {
     this._piece = piece;
+  }
+
+  get points(): number {
+    return this.props.points;
+  }
+
+  set points(points: number) {
+    this.props.points = points;
   }
 }

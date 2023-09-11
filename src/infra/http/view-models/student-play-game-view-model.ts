@@ -10,6 +10,7 @@ export class StudentPlayGameViewModel {
       game_id: player.game_id,
       game_position: player.game_position,
       player_user_id: player.player_user_id,
+      points: player.points,
     };
 
     if (player.piece) playerData.piece = PieceViewModel.toHTTP(player.piece);

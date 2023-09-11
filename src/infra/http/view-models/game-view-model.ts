@@ -2,6 +2,7 @@ import { Game } from '@app/entities/game';
 import { UserViewModel } from './user-view-model';
 import { GroupViewModel } from './group-view-model';
 import { QuestionViewModel } from './question-view-model';
+import { StudentPlayGameViewModel } from './student-play-game-view-model';
 
 export class GameViewModel {
   static toHTTP(game: Game) {
@@ -19,6 +20,10 @@ export class GameViewModel {
       questions: game.questions?.map((question) =>
         QuestionViewModel.toHTTP(question),
       ),
+      players: game.players?.map((player) =>
+        StudentPlayGameViewModel.toHTTP(player),
+      ),
+      winner: game.winner ? StudentPlayGameViewModel.toHTTP(game.winner) : null,
     };
   }
 }
