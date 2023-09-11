@@ -22,7 +22,8 @@ export interface QuestionsReponse {
   total_results: number;
 }
 
-export enum MinimumGameLimit {
+export enum GameLimit {
   QUESTIONS = 25,
   PLAYERS = 2,
+  MAX_HOUSES = 20,
 }

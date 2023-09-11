@@ -1,7 +1,7 @@
 import { Game } from '@app/entities/game';
 import { StudentsPlayGames } from '@app/entities/studentsPlayGames';
 import { Injectable } from '@nestjs/common';
-import { MinimumGameLimit } from 'src/interfaces';
+import { GameLimit } from 'src/interfaces';
 
 interface CheckUserCanStartAGameRequest {
   user_id: string;
@@ -17,12 +17,12 @@ export class CheckUserCanStartAGame {
 
     if (!!game.winner_user_id) return { error: 'Esse jogo já foi finalizado' };
 
-    if (game.questions?.length < MinimumGameLimit.QUESTIONS)
+    if (game.questions?.length < GameLimit.QUESTIONS)
       return {
-        error: `Cadastre pelo menos ${MinimumGameLimit.QUESTIONS} questões nesse jogo`,
+        error: `Cadastre pelo menos ${GameLimit.QUESTIONS} questões nesse jogo`,
       };
 
-    if (game.players?.length < MinimumGameLimit.PLAYERS)
+    if (game.players?.length < GameLimit.PLAYERS)
       return {
         error: 'Número de jogadores inferior a 2',
       };

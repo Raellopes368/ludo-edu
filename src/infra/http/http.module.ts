@@ -1,7 +1,10 @@
 import { JwtService } from '@nestjs/jwt';
+import type { RedisClientOptions } from 'redis';
+import * as redisStore from 'cache-manager-redis-store';
 
 import { DatabaseModule } from '@infra/database/database.module';
 import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
 
 import { CreateAuth } from '@app/use-cases/auth/create-auth';
 import { AuthController } from './controllers/auth.controller';
@@ -44,9 +47,18 @@ import { CheckUserCanAnswerQuestions } from '@app/use-cases/students/check-user-
 import { SetNextCurrentPlayer } from '@app/use-cases/students/set-next-current-player';
 import { AnswerQuestions } from '@app/use-cases/students/answer-questions';
 import { CreateAPiece } from '@app/use-cases/system/create-a-piece';
+import { SendWebsocketEvent } from '@app/use-cases/system/send-websocket-event';
+import { MovePiece } from '@app/use-cases/system/move-piece';
+import { SocketGateway } from '@infra/websocket/socket.gateway';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [
+    DatabaseModule,
+    CacheModule.register<RedisClientOptions>({
+      store: redisStore as any,
+      password: process.env.REDIS_PASSWORD,
+    }),
+  ],
   controllers: [
     UserController,
     AuthController,
@@ -86,6 +98,9 @@ import { CreateAPiece } from '@app/use-cases/system/create-a-piece';
     SetNextCurrentPlayer,
     AnswerQuestions,
     CreateAPiece,
+    SendWebsocketEvent,
+    MovePiece,
+    SocketGateway,
   ],
 })
 export class HttpModule {}

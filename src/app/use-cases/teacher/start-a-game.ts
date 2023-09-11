@@ -2,6 +2,7 @@ import { GameRepository } from '@app/repositories/GameRepository';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CheckUserCanStartAGame } from './check-user-can-start-a-game';
 import { StudentPlayGameRepository } from '@app/repositories/StudentPlayGameRepository';
+import { SendWebsocketEvent } from '../system/send-websocket-event';
 
 interface StartAGameRequest {
   user_id: string;
@@ -14,6 +15,7 @@ export class StartAGame {
     private gameRepository: GameRepository,
     private checkUserCanStartAGame: CheckUserCanStartAGame,
     private studentPlayGameRepository: StudentPlayGameRepository,
+    private sendWebsocketEvent: SendWebsocketEvent,
   ) {}
 
   async execute({ game_id, user_id }: StartAGameRequest) {
@@ -31,6 +33,14 @@ export class StartAGame {
     if (error) throw new HttpException(error, HttpStatus.FORBIDDEN);
 
     game.start(player.id);
+
+    this.sendWebsocketEvent.execute({
+      room: game.id,
+      event: 'current-player',
+      data: {
+        currentPlayer: player,
+      },
+    });
 
     await this.gameRepository.update(game);
 

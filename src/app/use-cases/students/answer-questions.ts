@@ -6,6 +6,7 @@ import { SetNextCurrentPlayer } from './set-next-current-player';
 import { QuestionOptionRepository } from '@app/repositories/QuestionOptionRepository';
 import { UserCheckOptions } from '@app/entities/userCheckOptions';
 import { StudentPlayGameRepository } from '@app/repositories/StudentPlayGameRepository';
+import { MovePiece } from '../system/move-piece';
 
 interface AnswerQuestionsRequest {
   user_id: string;
@@ -23,6 +24,7 @@ export class AnswerQuestions {
     private studentPlayGameRepository: StudentPlayGameRepository,
     private checkUserCanAnswerQuestions: CheckUserCanAnswerQuestions,
     private setNextCurrentPlayer: SetNextCurrentPlayer,
+    private movePiece: MovePiece,
   ) {}
 
   async execute({
@@ -34,6 +36,7 @@ export class AnswerQuestions {
       this.gameRepository.findById(game_id),
       this.studentPlayGameRepository.findByUserIdAndGame(user_id, game_id),
     ]);
+
     const error = await this.checkUserCanAnswerQuestions.execute({
       game,
       player_id: player.id,
@@ -51,6 +54,12 @@ export class AnswerQuestions {
     const questionOption = await this.questionOptionsRepository.findById(
       question_option_id,
     );
+
+    await this.movePiece.execute({
+      game,
+      player,
+      questionOption,
+    });
 
     await this.setNextCurrentPlayer.execute({
       game,

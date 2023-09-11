@@ -1,4 +1,5 @@
 import { Game } from '@app/entities/game';
+import { User } from '@app/entities/user';
 import { GameRepository } from '@app/repositories/GameRepository';
 import { UserRepository } from '@app/repositories/UserRepository';
 import { Injectable } from '@nestjs/common';
@@ -12,6 +13,7 @@ interface CheckUserCanJoinTheGameRequest {
 interface CheckUserCanJoinTheGameResponse {
   error: string | null;
   game: Game;
+  user: User;
 }
 
 @Injectable()
@@ -24,10 +26,14 @@ export class CheckUserCanJoinTheGame {
     user_id,
     game_id,
   }: CheckUserCanJoinTheGameRequest): Promise<CheckUserCanJoinTheGameResponse> {
-    const game = await this.gameRepository.findById(game_id);
+    const [game, user] = await Promise.all([
+      this.gameRepository.findById(game_id),
+      this.userRepository.findByUserId(user_id),
+    ]);
     const result: CheckUserCanJoinTheGameResponse = {
       error: null,
       game,
+      user,
     };
 
     if (!game) {
@@ -55,8 +61,6 @@ export class CheckUserCanJoinTheGame {
         ...result,
         error: 'Você já está nesse jogo',
       };
-
-    const user = await this.userRepository.findByUserId(user_id);
 
     if (user.type !== UserType.STUDENT) {
       return {
