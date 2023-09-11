@@ -130,6 +130,8 @@ model QuestionOptions {
 model UserCheckOptions {
   user_check_options_id String @id
 
+  is_invalid Boolean? @default(false)
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
