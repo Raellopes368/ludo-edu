@@ -22,6 +22,42 @@ export class PrismaPieceRepository implements PieceRepository {
       },
     });
   }
+
+  async findByGameAndPosition(
+    game_id: string,
+    position: number,
+  ): Promise<Piece> {
+    const piece = await this.prisma.pieces.findFirst({
+      where: {
+        player_owner: {
+          game_id,
+        },
+        house_position: position,
+      },
+    });
+
+    if (!piece) return null;
+
+    return PrismaPieceMapper.toDomain(piece);
+  }
+
+  async findByGameAndPlayer(
+    game_id: string,
+    player_id: string,
+  ): Promise<Piece> {
+    const piece = await this.prisma.pieces.findFirst({
+      where: {
+        student_play_game_id: player_id,
+        player_owner: {
+          game_id,
+        },
+      },
+    });
+
+    if (!piece) return null;
+
+    return PrismaPieceMapper.toDomain(piece);
+  }
   async listByGame(game_id: string): Promise<Piece[]> {
     const pieces = await this.prisma.pieces.findMany({
       where: {
