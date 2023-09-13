@@ -3,6 +3,7 @@ import { UserRepository } from '@app/repositories/UserRepository';
 import { Injectable } from '@nestjs/common';
 import { PrismaUserMapper } from '../mappers/prisma-user-mapper';
 import { PrismaService } from '../prisma.service';
+import { UserType } from 'src/interfaces';
 
 @Injectable()
 export class PrismaUserRepository implements UserRepository {
@@ -49,14 +50,21 @@ export class PrismaUserRepository implements UserRepository {
     return PrismaUserMapper.toDomain(user);
   }
 
-  async search(text: string): Promise<User[]> {
+  async search(term: string): Promise<User[]> {
     const users = await this.prisma.user.findMany({
       where: {
-        name: {
-          contains: text,
-          mode: 'insensitive',
-        },
-        email: text,
+        OR: [
+          {
+            name: {
+              contains: term,
+              mode: 'insensitive',
+            },
+          },
+          {
+            email: term,
+          },
+        ],
+        type: UserType.TEACHER,
       },
     });
     return users.map((user) => PrismaUserMapper.toDomain(user));
