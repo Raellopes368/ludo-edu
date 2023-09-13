@@ -50,6 +50,7 @@ import { CreateAPiece } from '@app/use-cases/system/create-a-piece';
 import { SendWebsocketEvent } from '@app/use-cases/system/send-websocket-event';
 import { MovePiece } from '@app/use-cases/system/move-piece';
 import { SocketGateway } from '@infra/websocket/socket.gateway';
+import { SearchUsers } from '@app/use-cases/user/search-users';
 
 @Module({
   imports: [
@@ -101,6 +102,7 @@ import { SocketGateway } from '@infra/websocket/socket.gateway';
     SendWebsocketEvent,
     MovePiece,
     SocketGateway,
+    SearchUsers,
   ],
 })
 export class HttpModule {}
