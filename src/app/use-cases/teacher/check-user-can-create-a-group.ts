@@ -1,6 +1,7 @@
 import { GroupsRepository } from '@app/repositories/GroupsRepository';
 import { UserRepository } from '@app/repositories/UserRepository';
 import { Injectable } from '@nestjs/common';
+import { UserType } from 'src/interfaces';
 
 interface CheckUserCanCreateAGroupRequest {
   name: string;
@@ -22,7 +23,7 @@ export class CheckUserCanCreateAGroup {
       teacher_owner_user_id,
     );
 
-    if (!teacher || teacher.type !== 1) return false;
+    if (!teacher || teacher.type !== UserType.TEACHER) return false;
 
     const groupHasExists = await this.groupsRepository.findByName(name);
 

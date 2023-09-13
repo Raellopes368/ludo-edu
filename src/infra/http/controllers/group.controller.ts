@@ -13,11 +13,13 @@ import {
 import { CreateGroupBody } from '../dtos/create-group-body';
 import { GroupViewModel } from '../view-models/group-view-model';
 import { JwtAuthGuard } from '@infra/auth/jwt-auth.guard';
-import { JWTReqPayload } from 'src/interfaces';
+import { JWTReqPayload, UserType } from 'src/interfaces';
 import { ListGroupsParams } from '../dtos/list-groups-params';
 import { ListGroups } from '@app/use-cases/teacher/list-groups';
 import { AddQuestionsToGroupBody } from '../dtos/add-questions-to-group-body';
 import { AddQuestionsToGroup } from '@app/use-cases/teacher/add-questions-to-group';
+import { RolesGuard } from '@infra/auth/roles.guard';
+import { Roles } from '@infra/auth/roles.decorator';
 
 @Controller('groups')
 export class GroupController {
@@ -29,6 +31,8 @@ export class GroupController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
+  @UseGuards(RolesGuard)
+  @Roles(UserType.TEACHER)
   async create(@Body() body: CreateGroupBody, @Req() req: JWTReqPayload) {
     const { description, name } = body;
     const { userId } = req.user;
