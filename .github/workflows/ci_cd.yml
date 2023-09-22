@@ -35,11 +35,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install TypeScript
-        run: npm install -g typescript
-
-      - name: Compile TypeScript
-        run: tsc
+      - name: Install dependencies
+        run: npm install --force
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
