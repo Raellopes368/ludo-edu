@@ -1,0 +1,16 @@
+FROM node:16.18.1
+
+USER node
+
+RUN mkdir -p /home/node/app
+
+WORKDIR /home/node/app
+
+COPY --chown=node:node package.json package-lock.json ./
+RUN npm ci --force
+
+COPY --chown=node:node . .
+
+RUN npm run build
+
+CMD [ "npm", "run", "start:prod" ]
