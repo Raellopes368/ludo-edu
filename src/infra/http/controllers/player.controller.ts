@@ -5,8 +5,10 @@ import { JwtAuthGuard } from '@infra/auth/jwt-auth.guard';
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -17,6 +19,8 @@ import { EnterInGameBody } from '../dtos/enter-in-game-body';
 import { JoinAGroupBody } from '../dtos/join-a-group-body';
 import { StudentPlayGameViewModel } from '../view-models/student-play-game-view-model';
 import { UserViewModel } from '../view-models/user-view-model';
+import { GetGame } from '@app/use-cases/students/get-game';
+import { GameViewModel } from '../view-models/game-view-model';
 
 @Controller('players')
 export class PlayerController {
@@ -24,6 +28,7 @@ export class PlayerController {
     private readonly studentEnterTheGame: StudentEnterTheGame,
     private studentJoinAGroup: StudentJoinsAGroup,
     private answerQuestion: AnswerQuestions,
+    private getGame: GetGame,
   ) {}
 
   @Post('/join')
@@ -89,6 +94,30 @@ export class PlayerController {
       throw new HttpException(
         error.response || 'Não foi responder a pergunta',
         HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/game/:game_id')
+  async getAGame(
+    @Param() { game_id }: { game_id: string },
+    @Req() req: JWTReqPayload,
+  ) {
+    try {
+      const { userId: user_id } = req.user;
+      const { game } = await this.getGame.execute({
+        game_id,
+        user_id,
+      });
+
+      return {
+        game: GameViewModel.toHTTP(game),
+      };
+    } catch (error: any) {
+      throw new HttpException(
+        error.response || 'Houve um erro ao retornar dados',
+        error.status || HttpStatus.BAD_REQUEST,
       );
     }
   }
