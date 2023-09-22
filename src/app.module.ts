@@ -2,8 +2,8 @@ import { AuthModule } from '@infra/auth/auth.module';
 import { DatabaseModule } from '@infra/database/database.module';
 import { HttpModule } from '@infra/http/http.module';
 import { Module } from '@nestjs/common';
-import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [

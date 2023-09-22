@@ -6,11 +6,6 @@ generator client {
   binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
 }
 
-generator erd {
-  provider = "prisma-erd-generator"
-  output   = "./erd.png"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -49,9 +44,10 @@ model StudentsPlayGames {
   playing Games[] @relation("playing")
 
   gamesWon         Games[]            @relation("winner")
-  pieces           Pieces[]
-  UserCheckOptions UserCheckOptions[]
+  piece            Pieces?
+  userCheckOptions UserCheckOptions[]
 
+  @@unique([player_user_id, game_id])
   @@map("students_play_games")
 }
 
@@ -60,6 +56,7 @@ model Games {
   is_started Boolean?
   created_at DateTime @default(now())
   game_level Int
+  name       String
 
   teacher_user_id String
   teacher         User                @relation("teacher", fields: [teacher_user_id], references: [user_id])
@@ -71,6 +68,8 @@ model Games {
   current_player_id String?
   current_player    StudentsPlayGames?  @relation("playing", fields: [current_player_id], references: [student_play_game_id])
   gamesHasQuestions GamesHasQuestions[]
+  group_id          String
+  group             Groups              @relation(fields: [group_id], references: [group_id])
 
   @@map("games")
 }
@@ -85,11 +84,12 @@ model Pieces {
   student_play_game_id String
   player_owner         StudentsPlayGames @relation(fields: [student_play_game_id], references: [student_play_game_id])
 
+  @@unique([student_play_game_id])
   @@map("pieces")
 }
 
 model GamesHasQuestions {
-  game_has_question_id String @id
+  game_has_question_id String @id @default(uuid())
 
   question_id String
   question    Questions @relation(fields: [question_id], references: [question_id])
@@ -108,8 +108,9 @@ model Questions {
   user_id String
   teacher User   @relation(fields: [user_id], references: [user_id])
 
-  gamesHasQuestions GamesHasQuestions[]
-  questionOptions   QuestionOptions[]
+  gamesHasQuestions  GamesHasQuestions[]
+  questionOptions    QuestionOptions[]
+  groupsHasQuestions GroupsHasQuestions[]
 
   @@map("questions")
 }
@@ -121,13 +122,18 @@ model QuestionOptions {
 
   question_id      String
   question         Questions          @relation(fields: [question_id], references: [question_id])
-  UserCheckOptions UserCheckOptions[]
+  userCheckOptions UserCheckOptions[]
 
   @@map("question_options")
 }
 
 model UserCheckOptions {
   user_check_options_id String @id
+
+  is_invalid Boolean? @default(false)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   student_user_id String
   player          StudentsPlayGames @relation(fields: [student_user_id], references: [student_play_game_id])
@@ -138,12 +144,29 @@ model UserCheckOptions {
   @@map("user_check_options")
 }
 
+model GroupsHasQuestions {
+  groups_has_questions_id String @id @default(uuid())
+
+  question_id String
+  question    Questions @relation(fields: [question_id], references: [question_id])
+
+  group_id String
+  group    Groups @relation(fields: [group_id], references: [group_id])
+
+  @@unique([question_id, group_id])
+  @@map("groups_has_questions")
+}
+
 model Groups {
   group_id    String @id
-  name        String
+  name        String @unique
   description String
 
   teacher_owner_user_id String
-  teacher_owner         User   @relation("teacher_groups", fields: [teacher_owner_user_id], references: [user_id])
-  students              User[] @relation("students_groups")
+  teacher_owner         User                 @relation("teacher_groups", fields: [teacher_owner_user_id], references: [user_id])
+  students              User[]               @relation("students_groups")
+  games                 Games[]
+  groupsHasQuestions    GroupsHasQuestions[]
+
+  @@map("groups")
 }

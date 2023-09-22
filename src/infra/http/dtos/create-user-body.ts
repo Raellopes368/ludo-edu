@@ -1,13 +1,12 @@
 import {
   IsEmail,
+  IsIn,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   IsUUID,
   Length,
-  Max,
-  Min,
 } from 'class-validator';
 
 export class CreateUserBody {
@@ -24,8 +23,7 @@ export class CreateUserBody {
   name: string;
 
   @IsNumber()
-  @Min(1)
-  @Max(2)
+  @IsIn([1, 2])
   type: number;
 
   @IsOptional()
