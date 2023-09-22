@@ -42,6 +42,7 @@ export class PrismaStudentPlayGameRepository
       },
       include: {
         piece: true,
+        player: true,
       },
     });
 
@@ -55,6 +56,7 @@ export class PrismaStudentPlayGameRepository
       },
       include: {
         piece: true,
+        player: true,
       },
     });
 

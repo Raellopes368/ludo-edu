@@ -2,8 +2,10 @@ import { StudentsPlayGames } from '@app/entities/studentsPlayGames';
 import {
   Pieces,
   StudentsPlayGames as StudentsPlayGamesRaw,
+  User,
 } from '@prisma/client';
 import { PrismaPieceMapper } from './prisma-piece-mapper';
+import { PrismaUserMapper } from './prisma-user-mapper';
 
 export class PrismaStudentPlayGameMapper {
   static toPrisma(player: StudentsPlayGames): StudentsPlayGamesRaw {
@@ -17,7 +19,11 @@ export class PrismaStudentPlayGameMapper {
     };
   }
   static toDomain(
-    player: StudentsPlayGamesRaw & { piece?: Pieces; points?: number },
+    player: StudentsPlayGamesRaw & {
+      piece?: Pieces;
+      points?: number;
+      player?: User;
+    },
   ) {
     const playerDomain = new StudentsPlayGames(
       {
@@ -33,6 +39,9 @@ export class PrismaStudentPlayGameMapper {
 
     if (player.piece)
       playerDomain.piece = PrismaPieceMapper.toDomain(player.piece);
+
+    if (player.player)
+      playerDomain.student = PrismaUserMapper.toDomain(player.player);
 
     return playerDomain;
   }
