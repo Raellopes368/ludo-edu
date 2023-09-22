@@ -52,6 +52,7 @@ import { MovePiece } from '@app/use-cases/system/move-piece';
 import { SocketGateway } from '@infra/websocket/socket.gateway';
 import { SearchUsers } from '@app/use-cases/user/search-users';
 import { GetGame } from '@app/use-cases/students/get-game';
+import { GetUser } from '@app/use-cases/user/get-user';
 
 @Module({
   imports: [
@@ -106,6 +107,7 @@ import { GetGame } from '@app/use-cases/students/get-game';
     SocketGateway,
     SearchUsers,
     GetGame,
+    GetUser,
   ],
 })
 export class HttpModule {}
