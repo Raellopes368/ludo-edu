@@ -18,7 +18,7 @@ export class RolesGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const roles = this.reflector.get<string[]>('roles', context.getHandler());
+    const roles = this.reflector.get<number[]>('roles', context.getHandler());
     if (!roles) return true;
 
     const request = context.switchToHttp().getRequest<any>();
@@ -26,7 +26,7 @@ export class RolesGuard implements CanActivate {
       const token = request.headers.authorization?.replace('Bearer ', '');
       const decodedToken: any = jwt.verify(token, jwtConstants.secret);
       const user = await this.userRepository.findByUserId(decodedToken.id);
-      if (!user || !roles.includes(user.type?.toString())) {
+      if (!user || !roles.includes(user.type)) {
         throw new HttpException('Acesso não autorizado', HttpStatus.FORBIDDEN);
       }
       return true;
