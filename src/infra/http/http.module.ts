@@ -51,13 +51,15 @@ import { SendWebsocketEvent } from '@app/use-cases/system/send-websocket-event';
 import { MovePiece } from '@app/use-cases/system/move-piece';
 import { SocketGateway } from '@infra/websocket/socket.gateway';
 import { SearchUsers } from '@app/use-cases/user/search-users';
+import { GetGame } from '@app/use-cases/students/get-game';
 
 @Module({
   imports: [
     DatabaseModule,
     CacheModule.register<RedisClientOptions>({
-      store: redisStore as any,
+      store: redisStore,
       password: process.env.REDIS_PASSWORD,
+      url: process.env.REDIS_HOST,
     }),
   ],
   controllers: [
@@ -103,6 +105,7 @@ import { SearchUsers } from '@app/use-cases/user/search-users';
     MovePiece,
     SocketGateway,
     SearchUsers,
+    GetGame,
   ],
 })
 export class HttpModule {}
