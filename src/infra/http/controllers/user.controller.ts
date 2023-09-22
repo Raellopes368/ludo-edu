@@ -7,17 +7,23 @@ import {
   HttpStatus,
   Post,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserBody } from '../dtos/create-user-body';
 import { UserViewModel } from '../view-models/user-view-model';
 import { SearchUsers } from '@app/use-cases/user/search-users';
 import { SearchUserQuery } from '../dtos/search-user-query';
+import { GetUser } from '@app/use-cases/user/get-user';
+import { JwtAuthGuard } from '@infra/auth/jwt-auth.guard';
+import { JWTReqPayload } from 'src/interfaces';
 
 @Controller('users')
 export class UserController {
   constructor(
     private readonly createUser: CreateUser,
     private readonly searchUsers: SearchUsers,
+    private readonly getUser: GetUser,
   ) {}
 
   @Post()
@@ -55,6 +61,24 @@ export class UserController {
       throw new HttpException(
         'Houve um erro ao listar usuários',
         HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get('/me')
+  @UseGuards(JwtAuthGuard)
+  async getMe(@Req() req: JWTReqPayload) {
+    try {
+      const { userId: user_id } = req.user;
+      const { user } = await this.getUser.execute({ user_id });
+
+      return {
+        user: UserViewModel.toHTTP(user),
+      };
+    } catch (err: any) {
+      throw new HttpException(
+        err.response || 'Houve um erro ao buscar usuário',
+        err.status || HttpStatus.BAD_REQUEST,
       );
     }
   }
