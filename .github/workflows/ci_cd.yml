@@ -16,7 +16,7 @@ on:
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: gcr.io
-  IMAGE_NAME: southamerica-east1-docker.pkg.dev/nest-js-api-399822/nest-js/ludo-edu
+  IMAGE_NAME: nest-js-api-399822/ludo-edu
   # github.repository as <account>/<repo>
   # IMAGE_NAME: ${{ github.repository }}
 
