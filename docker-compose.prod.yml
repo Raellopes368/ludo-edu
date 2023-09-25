@@ -8,9 +8,7 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - .:/home/node/app
       - /home/node/app/dist
-      - /home/node/app/node_modules
     depends_on:
       - db_prod
       - redis_prod
