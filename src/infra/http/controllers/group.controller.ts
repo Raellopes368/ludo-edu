@@ -47,9 +47,10 @@ export class GroupController {
         group: GroupViewModel.toHTTP(group),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         'Não foi possível criar o grupo',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -63,9 +64,10 @@ export class GroupController {
         groups: groups.map((group) => GroupViewModel.toHTTP(group)),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         'Não foi listar os grupos desse professor',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -81,9 +83,10 @@ export class GroupController {
         groups: groups.map((group) => GroupViewModel.toHTTP(group)),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         'Não foi listar os grupos desse professor',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -105,9 +108,10 @@ export class GroupController {
 
       return;
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
-        error.response || 'Não foi possível adicionar essas questões',
-        error.status || HttpStatus.BAD_REQUEST,
+        'Não foi possível adicionar essas questões',
+        error.INTERNAL_SERVER_ERROR,
       );
     }
   }
