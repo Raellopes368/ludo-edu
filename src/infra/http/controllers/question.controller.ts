@@ -74,30 +74,6 @@ export class QuestionController {
     }
   }
 
-  @Get('/:question_id')
-  @UseGuards(JwtAuthGuard)
-  async getQuestionComplete(
-    @Query() { question_id }: { question_id: string },
-    @Req() req: JWTReqPayload,
-  ) {
-    const { userId: user_id } = req.user;
-    try {
-      const { question } = await this.getAQuestionComplete.execute({
-        question_id,
-        user_id,
-      });
-
-      return {
-        question: QuestionViewModel.toHTTP(question, true),
-      };
-    } catch (error: any) {
-      throw new HttpException(
-        error.response || 'Não foi possível buscar uma questão',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-  }
-
   @Get('/list')
   @UseGuards(JwtAuthGuard)
   async list(@Query() query: PaginationQuery, @Req() req: JWTReqPayload) {
@@ -119,6 +95,30 @@ export class QuestionController {
     } catch (error: any) {
       throw new HttpException(
         'Não foi listar as questões',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get('/:question_id')
+  @UseGuards(JwtAuthGuard)
+  async getQuestionComplete(
+    @Query() { question_id }: { question_id: string },
+    @Req() req: JWTReqPayload,
+  ) {
+    const { userId: user_id } = req.user;
+    try {
+      const { question } = await this.getAQuestionComplete.execute({
+        question_id,
+        user_id,
+      });
+
+      return {
+        question: QuestionViewModel.toHTTP(question, true),
+      };
+    } catch (error: any) {
+      throw new HttpException(
+        error.response || 'Não foi possível buscar uma questão',
         HttpStatus.BAD_REQUEST,
       );
     }
