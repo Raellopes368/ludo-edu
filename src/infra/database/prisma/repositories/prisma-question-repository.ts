@@ -38,8 +38,7 @@ export class PrismaQuestionRepository implements QuestionsRepository {
   ): Promise<Question> {
     const question = await this.prisma.questions.findFirst({
       where: {
-        question_id,
-        user_id,
+        AND: [{ question_id }, { user_id }],
       },
       include: {
         questionOptions: true,
