@@ -4,6 +4,10 @@ import { QuestionsReponse } from 'src/interfaces';
 export abstract class QuestionsRepository {
   abstract create(question: Question): Promise<void>;
   abstract findById(question_id: string): Promise<Question | null>;
+  abstract getQuestionComplete(
+    question_id: string,
+    user_id: string,
+  ): Promise<Question | null>;
   abstract listByGroup(
     group_id: string,
     page: number,

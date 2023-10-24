@@ -32,6 +32,26 @@ export class PrismaQuestionRepository implements QuestionsRepository {
     return PrismaQuestionMapper.toDomain(question);
   }
 
+  async getQuestionComplete(
+    question_id: string,
+    user_id: string,
+  ): Promise<Question> {
+    const question = await this.prisma.questions.findFirst({
+      where: {
+        question_id,
+        user_id,
+      },
+      include: {
+        questionOptions: true,
+        teacher: true,
+      },
+    });
+
+    if (!question) return null;
+
+    return PrismaQuestionMapper.toDomain(question);
+  }
+
   async searchForPlayerResponse(
     player_id: string,
     game_id: string,
@@ -125,6 +145,9 @@ export class PrismaQuestionRepository implements QuestionsRepository {
             },
           },
         },
+        include: {
+          questionOptions: true,
+        },
       }),
       this.getCountByGroup(group_id),
     ]);
@@ -149,6 +172,13 @@ export class PrismaQuestionRepository implements QuestionsRepository {
         take: per_page,
         where: {
           user_id: teacher_id,
+        },
+        include: {
+          questionOptions: {
+            orderBy: {
+              content: 'asc',
+            },
+          },
         },
       }),
       this.getCountByTeacher(teacher_id),
