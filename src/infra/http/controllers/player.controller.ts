@@ -48,9 +48,10 @@ export class PlayerController {
         player: StudentPlayGameViewModel.toHTTP(player),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
-        error.response || 'Não foi possível entrar no jogo',
-        HttpStatus.BAD_REQUEST,
+        'Não foi possível entrar no jogo',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -70,9 +71,10 @@ export class PlayerController {
         user: UserViewModel.toHTTP(user),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
-        error.response || 'Não foi possível entrar no grupo',
-        HttpStatus.BAD_REQUEST,
+        'Não foi possível entrar no grupo',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -91,9 +93,10 @@ export class PlayerController {
         points,
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
-        error.response || 'Não foi responder a pergunta',
-        HttpStatus.BAD_REQUEST,
+        'Não foi responder a pergunta',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -115,9 +118,10 @@ export class PlayerController {
         game: GameViewModel.toHTTP(game),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
-        error.response || 'Houve um erro ao retornar dados',
-        error.status || HttpStatus.BAD_REQUEST,
+        'Houve um erro ao retornar dados',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }

@@ -42,9 +42,10 @@ export class UserController {
         user: UserViewModel.toHTTP(user),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         'Não foi possível criar o usuário',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -58,9 +59,10 @@ export class UserController {
         users: users.map((user) => UserViewModel.toHTTP(user)),
       };
     } catch (err) {
+      if (err instanceof HttpException) throw err;
       throw new HttpException(
         'Houve um erro ao listar usuários',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -75,10 +77,11 @@ export class UserController {
       return {
         user: UserViewModel.toHTTP(user),
       };
-    } catch (err: any) {
+    } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
-        err.response || 'Houve um erro ao buscar usuário',
-        err.status || HttpStatus.BAD_REQUEST,
+        'Houve um erro ao buscar usuário',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

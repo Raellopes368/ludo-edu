@@ -53,9 +53,10 @@ export class GameController {
         games: games.map((game) => GameViewModel.toHTTP(game)),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         'Não foi possível criar os jogos',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -79,9 +80,10 @@ export class GameController {
         game: GameViewModel.toHTTP(game),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
-        error.response || 'Não foi possível adicionar essas questões',
-        error.status || HttpStatus.BAD_REQUEST,
+        'Não foi possível adicionar essas questões',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -104,9 +106,10 @@ export class GameController {
         total_results,
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         'Não foi listar os grupos desse professor',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -128,9 +131,10 @@ export class GameController {
         total_results,
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         'Não foi listar os grupos desse professor',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -154,9 +158,10 @@ export class GameController {
         total_results,
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         'Não foi listar os grupos desse professor',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -176,9 +181,10 @@ export class GameController {
         game: GameViewModel.toHTTP(game),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
-        error.response || 'Não foi possível iniciar o jogo',
-        error.status || HttpStatus.BAD_REQUEST,
+        'Não foi possível iniciar o jogo',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
