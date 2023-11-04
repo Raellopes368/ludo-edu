@@ -60,20 +60,21 @@ export class PrismaGameRepository implements GameRepository {
     await this.prisma.games.createMany({
       data: gamesRaw,
     });
+    const allQuestions = await Promise.all(
+      games.map((game) =>
+        this.listQuestionsByGroupAndLevel(game.group_id, game.game_level),
+      ),
+    );
     const gamesHasQuestions = [];
-    for (const game of games) {
-      const questions = await this.listQuestionsByGroupAndLevel(
-        game.group_id,
-        game.game_level,
-      );
 
-      questions.forEach((question) => {
+    games.forEach((game, index) => {
+      allQuestions[index].forEach((question) => {
         gamesHasQuestions.push({
           game_id: game.id,
           question_id: question.question_id,
         });
       });
-    }
+    });
 
     await this.prisma.gamesHasQuestions.createMany({
       data: gamesHasQuestions,
