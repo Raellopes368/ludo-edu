@@ -46,9 +46,10 @@ export class QuestionController {
         question: QuestionViewModel.toHTTP(question),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         'Não foi possível criar a questão',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -70,9 +71,10 @@ export class QuestionController {
         question: QuestionViewModel.toHTTP(question),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
-        error.response || 'Não foi possível buscar uma questão',
-        HttpStatus.BAD_REQUEST,
+        'Não foi possível buscar uma questão',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -96,9 +98,10 @@ export class QuestionController {
         total_results,
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         'Não foi listar as questões',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -125,9 +128,10 @@ export class QuestionController {
         total_results,
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
         'Não foi listar as questões',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -149,9 +153,10 @@ export class QuestionController {
         question: QuestionViewModel.toHTTP(question, true),
       };
     } catch (error: any) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException(
-        error.response || 'Não foi possível buscar uma questão',
-        HttpStatus.BAD_REQUEST,
+        'Não foi possível buscar uma questão',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
