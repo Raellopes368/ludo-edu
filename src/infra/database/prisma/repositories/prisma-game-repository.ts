@@ -12,7 +12,18 @@ export class PrismaGameRepository implements GameRepository {
   async create(game: Game): Promise<void> {
     const gameRaw = PrismaGameMapper.toPrisma(game);
     await this.prisma.games.create({
-      data: gameRaw,
+      data: {
+        ...gameRaw,
+        gamesHasQuestions: {
+          createMany: {
+            data: [
+              {
+                question_id: '',
+              },
+            ],
+          },
+        },
+      },
     });
   }
 
@@ -26,10 +37,46 @@ export class PrismaGameRepository implements GameRepository {
     });
   }
 
+  async listQuestionsByGroupAndLevel(group_id: string, level: number) {
+    const questions = await this.prisma.questions.findMany({
+      where: {
+        level,
+        groupsHasQuestions: {
+          every: {
+            group_id,
+          },
+        },
+      },
+      select: {
+        question_id: true,
+      },
+    });
+
+    return questions;
+  }
+
   async createMany(games: Game[]): Promise<void> {
     const gamesRaw = games.map((game) => PrismaGameMapper.toPrisma(game));
     await this.prisma.games.createMany({
       data: gamesRaw,
+    });
+    const gamesHasQuestions = [];
+    for (const game of games) {
+      const questions = await this.listQuestionsByGroupAndLevel(
+        game.group_id,
+        game.game_level,
+      );
+
+      questions.forEach((question) => {
+        gamesHasQuestions.push({
+          game_id: game.id,
+          question_id: question.question_id,
+        });
+      });
+    }
+
+    await this.prisma.gamesHasQuestions.createMany({
+      data: gamesHasQuestions,
     });
   }
 
