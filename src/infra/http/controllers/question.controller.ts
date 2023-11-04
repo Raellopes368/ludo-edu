@@ -5,6 +5,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Query,
   Req,
@@ -19,6 +20,7 @@ import { PaginationQuery } from '../dtos/pagination-query';
 import { ListQuestions } from '@app/use-cases/teacher/list-questions';
 import { parseToNumber } from '@helpers/parseToNumber';
 import { GetQuestionComplete } from '@app/use-cases/teacher/get-question-complete';
+import { ListQuestionsByGroup } from '@app/use-cases/teacher/list-questions-by-group';
 
 @Controller('questions')
 export class QuestionController {
@@ -27,6 +29,7 @@ export class QuestionController {
     private readonly getQuestionToAnswer: GetQuestionToAnswer,
     private readonly listQuestions: ListQuestions,
     private readonly getAQuestionComplete: GetQuestionComplete,
+    private readonly listQuestionsByGroup: ListQuestionsByGroup,
   ) {}
 
   @Post()
@@ -85,6 +88,35 @@ export class QuestionController {
         page: parseToNumber(page),
         per_page: parseToNumber(per_page),
       });
+
+      return {
+        questions: questions.map((question) =>
+          QuestionViewModel.toHTTP(question, true),
+        ),
+        total_results,
+      };
+    } catch (error: any) {
+      throw new HttpException(
+        'Não foi listar as questões',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get('/list/by_group/:group_id')
+  @UseGuards(JwtAuthGuard)
+  async listByGroup(
+    @Query() query: PaginationQuery,
+    @Param() { group_id }: { group_id: string },
+  ) {
+    try {
+      const { page, per_page } = query;
+      const { questions, total_results } =
+        await this.listQuestionsByGroup.execute({
+          group_id,
+          page: parseToNumber(page),
+          per_page: parseToNumber(per_page),
+        });
 
       return {
         questions: questions.map((question) =>

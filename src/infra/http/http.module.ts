@@ -54,6 +54,7 @@ import { SearchUsers } from '@app/use-cases/user/search-users';
 import { GetGame } from '@app/use-cases/students/get-game';
 import { GetUser } from '@app/use-cases/user/get-user';
 import { GetQuestionComplete } from '@app/use-cases/teacher/get-question-complete';
+import { ListQuestionsByGroup } from '@app/use-cases/teacher/list-questions-by-group';
 
 @Module({
   imports: [
@@ -110,6 +111,7 @@ import { GetQuestionComplete } from '@app/use-cases/teacher/get-question-complet
     GetGame,
     GetUser,
     GetQuestionComplete,
+    ListQuestionsByGroup,
   ],
 })
 export class HttpModule {}
