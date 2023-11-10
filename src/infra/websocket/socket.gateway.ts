@@ -21,6 +21,7 @@ export class SocketGateway {
   async handleConnection(client: Socket) {
     const userId = (client.handshake.query?.userId as string) || '';
     await this.cacheManager.set(userId, client.id);
+    console.log(userId);
     const gameRoom = await this.cacheManager.get<string>(`game-${userId}`);
     if (gameRoom) {
       client.join(gameRoom);
