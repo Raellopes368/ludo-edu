@@ -4,6 +4,7 @@ import { GameRepository } from '@app/repositories/GameRepository';
 import { Injectable } from '@nestjs/common';
 import { MAX_POINT } from '../system/move-piece';
 import { SendWebsocketEvent } from '../system/send-websocket-event';
+import { StudentPlayGameViewModel } from '@infra/http/view-models/student-play-game-view-model';
 
 interface SetNextCurrentPlayerRequest {
   game: Game;
@@ -22,7 +23,7 @@ export class SetNextCurrentPlayer {
         room: game.id,
         event: 'current-player',
         data: {
-          currentPlayer: game.current_player,
+          currentPlayer: StudentPlayGameViewModel.toHTTP(game.current_player),
         },
       });
       return;
@@ -42,7 +43,7 @@ export class SetNextCurrentPlayer {
       room: game.id,
       event: 'current-player',
       data: {
-        currentPlayer: nextPlayer,
+        currentPlayer: StudentPlayGameViewModel.toHTTP(nextPlayer),
       },
     });
 
