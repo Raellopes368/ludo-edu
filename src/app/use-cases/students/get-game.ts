@@ -5,6 +5,7 @@ import { SocketGateway } from '@infra/websocket/socket.gateway';
 import { StudentPlayGameRepository } from '@app/repositories/StudentPlayGameRepository';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { StudentPlayGameViewModel } from '@infra/http/view-models/student-play-game-view-model';
 
 interface GetGameRequest {
   user_id: string;
@@ -46,7 +47,7 @@ export class GetGame {
       room: game_id,
       event: 'join-game',
       data: {
-        player,
+        player: StudentPlayGameViewModel.toHTTP(player),
       },
     });
 

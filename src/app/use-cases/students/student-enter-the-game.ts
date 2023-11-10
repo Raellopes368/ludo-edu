@@ -8,6 +8,7 @@ import { CreateAPiece } from '../system/create-a-piece';
 import { SendWebsocketEvent } from '../system/send-websocket-event';
 import { CheckUserCanJoinTheGame } from './check-user-can-join-the-game';
 import { GetPlayerPositions } from './get-player-positions';
+import { StudentPlayGameViewModel } from '@infra/http/view-models/student-play-game-view-model';
 
 interface StudentEnterTheGameRequest {
   player_user_id: string;
@@ -77,7 +78,7 @@ export class StudentEnterTheGame {
       room: game_id,
       event: 'join-game',
       data: {
-        player,
+        player: StudentPlayGameViewModel.toHTTP(player),
       },
     });
 
