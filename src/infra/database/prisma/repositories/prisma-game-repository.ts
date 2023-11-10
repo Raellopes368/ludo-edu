@@ -100,13 +100,9 @@ export class PrismaGameRepository implements GameRepository {
       include: {
         players: {
           include: {
-            _count: {
+            userCheckOptions: {
               select: {
-                userCheckOptions: {
-                  where: {
-                    is_invalid: false,
-                  },
-                },
+                question_option: true,
               },
             },
             player: true,
@@ -130,12 +126,20 @@ export class PrismaGameRepository implements GameRepository {
 
     if (!game) return null;
     const { players, ...gameData } = game;
+    const playerScores: any = {};
+    players.forEach((player) => {
+      player.userCheckOptions?.forEach((checkedOption) => {
+        const points = checkedOption.question_option.points || 0;
+        playerScores[player.player_user_id] =
+          (playerScores[player.player_user_id] || 0) + points;
+      });
+    });
 
     return PrismaGameMapper.toDomain({
       ...gameData,
-      players: players.map(({ _count, ...player }) => ({
+      players: players.map((player) => ({
         ...player,
-        points: _count.userCheckOptions,
+        points: playerScores[player.player_user_id],
       })),
     });
   }
@@ -148,13 +152,9 @@ export class PrismaGameRepository implements GameRepository {
       include: {
         players: {
           include: {
-            _count: {
+            userCheckOptions: {
               select: {
-                userCheckOptions: {
-                  where: {
-                    is_invalid: false,
-                  },
-                },
+                question_option: true,
               },
             },
             player: {
@@ -178,11 +178,20 @@ export class PrismaGameRepository implements GameRepository {
     if (!game) return null;
     const { players, ...gameData } = game;
 
+    const playerScores: any = {};
+    players.forEach((player) => {
+      player.userCheckOptions?.forEach((checkedOption) => {
+        const points = checkedOption.question_option.points || 0;
+        playerScores[player.player_user_id] =
+          (playerScores[player.player_user_id] || 0) + points;
+      });
+    });
+
     return PrismaGameMapper.toDomain({
       ...gameData,
-      players: players.map(({ _count, ...player }) => ({
+      players: players.map((player) => ({
         ...player,
-        points: _count.userCheckOptions,
+        points: playerScores[player.player_user_id],
       })),
     });
   }
