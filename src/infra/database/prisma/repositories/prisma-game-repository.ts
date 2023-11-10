@@ -157,7 +157,15 @@ export class PrismaGameRepository implements GameRepository {
                 },
               },
             },
-            player: true,
+            player: {
+              include: {
+                studentsPlayGames: {
+                  include: {
+                    player: true,
+                  },
+                },
+              },
+            },
           },
         },
         current_player: true,
@@ -211,7 +219,15 @@ export class PrismaGameRepository implements GameRepository {
         include: {
           players: {
             include: {
-              player: true,
+              player: {
+                include: {
+                  studentsPlayGames: {
+                    include: {
+                      player: true,
+                    },
+                  },
+                },
+              },
               _count: {
                 select: {
                   userCheckOptions: {
