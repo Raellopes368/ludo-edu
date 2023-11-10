@@ -208,10 +208,16 @@ export class PrismaGameRepository implements GameRepository {
         where: {
           teacher_user_id: teacher_id,
         },
+        include: {
+          players: {
+            include: {
+              player: true,
+            },
+          },
+        },
       }),
       this.countGamesByTeacher(teacher_id),
     ]);
-
     return {
       games: games.map((game) => PrismaGameMapper.toDomain(game)),
       total_results: total,
