@@ -157,7 +157,15 @@ export class PrismaGameRepository implements GameRepository {
                 },
               },
             },
-            player: true,
+            player: {
+              include: {
+                studentsPlayGames: {
+                  include: {
+                    player: true,
+                  },
+                },
+              },
+            },
           },
         },
         current_player: true,
@@ -211,6 +219,28 @@ export class PrismaGameRepository implements GameRepository {
         include: {
           players: {
             include: {
+              player: {
+                include: {
+                  studentsPlayGames: {
+                    include: {
+                      player: true,
+                    },
+                  },
+                },
+              },
+              _count: {
+                select: {
+                  userCheckOptions: {
+                    where: {
+                      is_invalid: false,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          winner: {
+            include: {
               player: true,
             },
           },
@@ -219,7 +249,15 @@ export class PrismaGameRepository implements GameRepository {
       this.countGamesByTeacher(teacher_id),
     ]);
     return {
-      games: games.map((game) => PrismaGameMapper.toDomain(game)),
+      games: games.map(({ players, ...game }) =>
+        PrismaGameMapper.toDomain({
+          ...game,
+          players: players.map(({ _count, ...player }) => ({
+            ...player,
+            points: _count.userCheckOptions,
+          })),
+        }),
+      ),
       total_results: total,
     };
   }
