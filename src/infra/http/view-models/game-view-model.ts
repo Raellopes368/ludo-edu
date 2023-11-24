@@ -23,6 +23,7 @@ export class GameViewModel {
       players: game.players?.map((player) =>
         StudentPlayGameViewModel.toHTTP(player),
       ),
+      amount_questions: game.amount_questions,
       winner: game.winner ? StudentPlayGameViewModel.toHTTP(game.winner) : null,
     };
   }

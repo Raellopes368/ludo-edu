@@ -15,6 +15,7 @@ interface GamesDomainData extends Games {
   players?: (StudentsPlayGames & { points?: number })[];
   current_player?: StudentsPlayGames;
   winner?: StudentsPlayGames;
+  amount_questions?: number;
 }
 
 export class PrismaGameMapper {
@@ -60,6 +61,9 @@ export class PrismaGameMapper {
       gameDomain.current_player = PrismaStudentPlayGameMapper.toDomain(
         game.current_player,
       );
+
+    if (game.amount_questions)
+      gameDomain.amount_questions = game.amount_questions;
 
     if (game.winner)
       gameDomain.winner = PrismaStudentPlayGameMapper.toDomain(game.winner);
