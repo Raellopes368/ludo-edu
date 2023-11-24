@@ -3,6 +3,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CheckUserCanStartAGame } from './check-user-can-start-a-game';
 import { StudentPlayGameRepository } from '@app/repositories/StudentPlayGameRepository';
 import { SendWebsocketEvent } from '../system/send-websocket-event';
+import { StudentPlayGameViewModel } from '@infra/http/view-models/student-play-game-view-model';
 
 interface StartAGameRequest {
   user_id: string;
@@ -38,7 +39,7 @@ export class StartAGame {
       room: game.id,
       event: 'current-player',
       data: {
-        currentPlayer: player,
+        currentPlayer: StudentPlayGameViewModel.toHTTP(player),
       },
     });
 

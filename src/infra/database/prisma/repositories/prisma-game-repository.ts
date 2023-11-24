@@ -93,20 +93,24 @@ export class PrismaGameRepository implements GameRepository {
     });
   }
   async findById(game_id: string): Promise<Game> {
-    const game = await this.prisma.games.findUnique({
+    const {
+      _count: { gamesHasQuestions },
+      ...game
+    } = await this.prisma.games.findUnique({
       where: {
         game_id,
       },
       include: {
+        _count: {
+          select: {
+            gamesHasQuestions: true,
+          },
+        },
         players: {
           include: {
-            _count: {
+            userCheckOptions: {
               select: {
-                userCheckOptions: {
-                  where: {
-                    is_invalid: false,
-                  },
-                },
+                question_option: true,
               },
             },
             player: true,
@@ -130,31 +134,44 @@ export class PrismaGameRepository implements GameRepository {
 
     if (!game) return null;
     const { players, ...gameData } = game;
+    const playerScores: any = {};
+    players.forEach((player) => {
+      player.userCheckOptions?.forEach((checkedOption) => {
+        const points = checkedOption.question_option.points || 0;
+        playerScores[player.player_user_id] =
+          (playerScores[player.player_user_id] || 0) + points;
+      });
+    });
 
     return PrismaGameMapper.toDomain({
       ...gameData,
-      players: players.map(({ _count, ...player }) => ({
+      amount_questions: gamesHasQuestions,
+      players: players.map((player) => ({
         ...player,
-        points: _count.userCheckOptions,
+        points: playerScores[player.player_user_id],
       })),
     });
   }
 
   async getById(game_id: string): Promise<Game> {
-    const game = await this.prisma.games.findUnique({
+    const {
+      _count: { gamesHasQuestions },
+      ...game
+    } = await this.prisma.games.findUnique({
       where: {
         game_id,
       },
       include: {
+        _count: {
+          select: {
+            gamesHasQuestions: true,
+          },
+        },
         players: {
           include: {
-            _count: {
+            userCheckOptions: {
               select: {
-                userCheckOptions: {
-                  where: {
-                    is_invalid: false,
-                  },
-                },
+                question_option: true,
               },
             },
             player: {
@@ -178,11 +195,21 @@ export class PrismaGameRepository implements GameRepository {
     if (!game) return null;
     const { players, ...gameData } = game;
 
+    const playerScores: any = {};
+    players.forEach((player) => {
+      player.userCheckOptions?.forEach((checkedOption) => {
+        const points = checkedOption.question_option.points || 0;
+        playerScores[player.player_user_id] =
+          (playerScores[player.player_user_id] || 0) + points;
+      });
+    });
+
     return PrismaGameMapper.toDomain({
       ...gameData,
-      players: players.map(({ _count, ...player }) => ({
+      amount_questions: gamesHasQuestions,
+      players: players.map((player) => ({
         ...player,
-        points: _count.userCheckOptions,
+        points: playerScores[player.player_user_id],
       })),
     });
   }
@@ -239,6 +266,11 @@ export class PrismaGameRepository implements GameRepository {
               },
             },
           },
+          _count: {
+            select: {
+              gamesHasQuestions: true,
+            },
+          },
           winner: {
             include: {
               player: true,
@@ -252,6 +284,7 @@ export class PrismaGameRepository implements GameRepository {
       games: games.map(({ players, ...game }) =>
         PrismaGameMapper.toDomain({
           ...game,
+          amount_questions: game._count.gamesHasQuestions,
           players: players.map(({ _count, ...player }) => ({
             ...player,
             points: _count.userCheckOptions,
@@ -274,12 +307,24 @@ export class PrismaGameRepository implements GameRepository {
         where: {
           group_id,
         },
+        include: {
+          _count: {
+            select: {
+              gamesHasQuestions: true,
+            },
+          },
+        },
       }),
       this.countGamesByGroup(group_id),
     ]);
 
     return {
-      games: games.map((game) => PrismaGameMapper.toDomain(game)),
+      games: games.map(({ _count: { gamesHasQuestions }, ...game }) =>
+        PrismaGameMapper.toDomain({
+          ...game,
+          amount_questions: gamesHasQuestions,
+        }),
+      ),
       total_results: total,
     };
   }

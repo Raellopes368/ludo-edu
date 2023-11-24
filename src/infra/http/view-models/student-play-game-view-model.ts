@@ -1,5 +1,6 @@
 import { StudentsPlayGames } from '@app/entities/studentsPlayGames';
 import { PieceViewModel } from './piece-view-model';
+import { UserViewModel } from './user-view-model';
 
 export class StudentPlayGameViewModel {
   static toHTTP(player: StudentsPlayGames) {
@@ -13,6 +14,8 @@ export class StudentPlayGameViewModel {
       points: player.points,
     };
 
+    if (player.student)
+      playerData.player = UserViewModel.toHTTP(player.student);
     if (player.piece) playerData.piece = PieceViewModel.toHTTP(player.piece);
 
     return playerData;
