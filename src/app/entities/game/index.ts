@@ -22,6 +22,7 @@ export class Game {
   private _teacher: User;
   private _group: Groups;
   private _questions: Question[];
+  private _amount_questions: number;
   private _players: StudentsPlayGames[];
   private _winner: StudentsPlayGames;
   private _current_player: StudentsPlayGames;
@@ -137,6 +138,14 @@ export class Game {
 
   set players(players: StudentsPlayGames[]) {
     this._players = players;
+  }
+
+  get amount_questions(): number {
+    return this._amount_questions;
+  }
+
+  set amount_questions(_amount_questions: number) {
+    this._amount_questions = _amount_questions;
   }
 
   start(current_player_id: string) {
