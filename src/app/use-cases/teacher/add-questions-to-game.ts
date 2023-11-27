@@ -35,10 +35,17 @@ export class AddQuestionsToGame {
     const gameQuestionsIds = game.questions?.map((item) => item.id);
     const questionsCanAdd = questions.filter(
       (question) =>
-        question.level === game.game_level &&
-        question.questionOptions?.length &&
-        !gameQuestionsIds?.includes(question.id),
+        question.level === game.game_level && question.questionOptions?.length,
     );
+
+    if (
+      !questions.filter((question) => !gameQuestionsIds?.includes(question.id))
+        .length
+    )
+      throw new HttpException(
+        'Essas questões já foram adicionadas nessa partida',
+        HttpStatus.BAD_REQUEST,
+      );
 
     if (!questionsCanAdd.length)
       throw new HttpException(
