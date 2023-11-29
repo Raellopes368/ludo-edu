@@ -56,9 +56,9 @@ export class PrismaQuestionRepository implements QuestionsRepository {
     game_id: string,
   ): Promise<Question> {
     const questions = await this.prisma.$queryRawUnsafe<
-      (Questions & QuestionOptions & { questionContent: string })[]
+      (Questions & QuestionOptions & { question_content: string })[]
     >(`
-		SELECT q.*, q.content as questionContent, qo.*, uco.updated_at AS answered_at
+		SELECT q.*, q.content as question_content, qo.*, uco.updated_at AS answered_at
 		FROM questions q
 		JOIN games_has_questions ghq ON q.question_id = ghq.question_id
 		LEFT JOIN question_options qo ON q.question_id = qo.question_id
@@ -77,15 +77,15 @@ export class PrismaQuestionRepository implements QuestionsRepository {
 
     if (!questions.length) return null;
 
-    const [{ question_id, questionContent, level, user_id }] = questions;
+    const [{ question_id, question_content, level, user_id }] = questions;
 
     return PrismaQuestionMapper.toDomain({
       question_id,
-      content: questionContent,
+      content: question_content,
       level,
       user_id,
       questionOptions: questions.map(
-        ({ question_id, questionContent, level, user_id, ...rest }) => ({
+        ({ question_id, question_content, level, user_id, ...rest }) => ({
           ...rest,
           question_id,
         }),
